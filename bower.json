@@ -1,0 +1,13 @@
+{
+  "name": "aperio",
+  "version": "0.0.1",
+  "main": "",
+  "ignore": [ ],
+  "dependencies": {
+    "bootstrap": "~3.3.2",
+    "fontawesome": "~4.2.0"
+  },
+  "devDependencies": {
+
+  }
+}
