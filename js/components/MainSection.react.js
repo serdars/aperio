@@ -6,7 +6,7 @@ var Organization = require('./Organization.react');
 var MainSection = React.createClass({
 
   propTypes: {
-    allOrganizations: ReactPropTypes.object.isRequired
+    timeline: ReactPropTypes.array.isRequired
   },
 
   /**
@@ -15,20 +15,20 @@ var MainSection = React.createClass({
   render: function() {
     // This section should be hidden by default
     // and shown when there are organizations.
-    if (Object.keys(this.props.allOrganizations).length < 1) {
+    if (Object.keys(this.props.timeline).length < 1) {
       return null;
     }
 
-    var allOrganizations = this.props.allOrganizations;
-    var organizations = [];
+    var timeline = this.props.timeline;
+    var timelineEntries = [ ];
 
-    for (var key in allOrganizations) {
-      organizations.push(<Organization key={key} organization={allOrganizations[key]} />);
+    for(var key in timeline) {
+      timelineEntries.push(<li> {timeline[key]} </li>);
     }
 
     return (
       <section id="main">
-        <ul id="organization-list">{organizations}</ul>
+        <ul id="timeline-list">{timelineEntries}</ul>
       </section>
     );
   },

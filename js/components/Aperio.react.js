@@ -3,17 +3,14 @@ var Header = require('./Header.react');
 var MainSection = require('./MainSection.react');
 var React = require('react');
 var AperioStore = require('../stores/AperioStore');
-
-function getAperioState() {
-  return {
-    allOrganizations: AperioStore.getAllOrganizations()
-  };
-}
+var TimelineFilters = require('./TimelineFilters.react');
 
 var AperioApp = React.createClass({
 
   getInitialState: function() {
-    return getAperioState();
+    return {
+      currentUser: AperioStore.getCurrentUser()
+    };
   },
 
   componentDidMount: function() {
@@ -25,20 +22,15 @@ var AperioApp = React.createClass({
   },
 
   render: function() {
-  	return (
-      <div>
-        <Header />
-        <MainSection
-          allOrganizations={this.state.allOrganizations}
-        />
-        <Footer allOrganizations={this.state.allOrganizations} />
-      </div>
-  	);
+    return (
+      <TimelineFilters user={this.state.currentUser} onFilter={this._onFilter}/>
+    )
   },
 
-  /**
-   * Event handler for 'change' events coming from the AperioStore
-   */
+  _onFilter: function(filters) {
+    console.log("Filters: " + filters.filteredBy + filters.filterOrg)
+  },
+
   _onChange: function() {
     this.setState(getAperioState());
   }

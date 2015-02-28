@@ -5,7 +5,96 @@ var assign = require('object-assign');
 
 var CHANGE_EVENT = 'change';
 
-var _orgs = {};
+var orgIds = 0;
+function Organization (name, motto, groups) {
+  this.id = orgIds;
+  orgIds = orgIds + 1;
+
+  this.name = name;
+  this.groups = groups;
+  this.motto = motto;
+}
+
+var groupIds = 0;
+function Group (name, motto, isVisible, isPrivate, notifications) {
+  this.id = groupIds;
+  groupIds = groupIds + 1;
+
+  this.name = name;
+  this.motto = motto;
+  this.isVisible = isVisible;
+  this.isPrivate = isPrivate;
+  this.notifications = notifications;
+}
+
+function User (name, email, organizations) {
+  this.name = name;
+  this.email = email;
+  this.organizations = organizations;
+
+  this.isMember = function(groupId) {
+    return (Math.random() < 0.25);
+  };
+}
+
+function getNotifications() {
+  return Math.floor(Math.random() * 8);
+}
+
+function getOrgGroups() {
+  return [
+    new Group(
+      "All Members",
+      "Everyone in the organization",
+      true, false, getNotifications()
+    ),
+    new Group(
+      "Admins",
+      "Admins of the organization",
+      false, true, getNotifications()
+    ),
+    new Group(
+      "Volunteers",
+      "Valuable Volunteers",
+      true, true, getNotifications()
+    ),
+    new Group(
+      "Board",
+      "Board of our Organization",
+      true, true, getNotifications()
+    )
+  ]
+}
+
+var _currentUser = new User("bendito", "bendito@gmail.com",
+  [
+    new Organization(
+      "Bill & Melinda Gates Foundation",
+      "Making the world HEALTHY",
+      getOrgGroups()
+    ),
+    new Organization(
+      "501 Commons",
+      "Making NPOs faster, stronger, more impactful",
+      getOrgGroups()
+    ),
+    new Organization(
+      "Crooked Trails",
+      "Travel purposefully",
+      getOrgGroups()
+    ),
+    new Organization(
+      "Fusion IQ",
+      "Tech consulting for non-profits",
+      getOrgGroups()
+    ),
+    new Organization(
+      "Aperio",
+      "Meaningful Engagement Platform",
+      getOrgGroups()
+    ),
+  ]
+);
 
 function create(text) {
   // Hand waving here -- not showing how this interacts with XHR or persistent
@@ -27,8 +116,8 @@ function destroy(id) {
 }
 
 var AperioStore = assign({}, EventEmitter.prototype, {
-  getAllOrganizations: function() {
-    return _orgs;
+  getCurrentUser: function() {
+    return _currentUser;
   },
 
   emitChange: function() {
