@@ -3,27 +3,19 @@ var AperioConstants = require('../constants/AperioConstants');
 
 var AperioActions = {
 
-  create: function(text) {
+  loadUser: function(user) {
     AppDispatcher.dispatch({
-      actionType: AperioConstants.ORG_CREATE,
-      text: text
+      actionType: AperioConstants.LOAD_USER,
+      user: user
     });
   },
 
-  updateText: function(id, text) {
+  loadTimeline: function(timeline) {
     AppDispatcher.dispatch({
-      actionType: AperioConstants.ORG_UPDATE,
-      id: id,
-      text: text
+      actionType: AperioConstants.LOAD_TIMELINE,
+      timeline: timeline
     });
-  },
-
-  destroy: function(id) {
-    AppDispatcher.dispatch({
-      actionType: AperioConstants.ORG_DESTROY,
-      id: id
-    });
-  },
+  }
 
 };
 

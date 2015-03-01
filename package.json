@@ -9,7 +9,8 @@
     "keymirror": "~0.1.0",
     "object-assign": "^1.0.0",
     "react": "^0.12.0",
-    "react-bootstrap": "^0.16.0"
+    "react-bootstrap": "^0.16.0",
+    "superagent" :"^0.21.0"
   },
   "devDependencies": {
     "browserify": "^6.2.0",
@@ -17,10 +18,12 @@
     "reactify": "^0.15.2",
     "uglify-js": "~2.4.15",
     "watchify": "^2.1.1",
-    "bower": "^1.3.12"
+    "bower": "^1.3.12",
+    "http-server": "^0.7.5"
   },
   "scripts": {
-    "start": "watchify -o js/bundle.js -v -d .",
+    "watch": "watchify -o js/bundle.js -v -d .",
+    "serve": "http-server ./",
     "build": "NODE_ENV=production browserify . | uglifyjs -cm > js/bundle.min.js"
   },
   "author": "Serdar Sutay",

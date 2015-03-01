@@ -1,12 +1,15 @@
+var React = require('react');
+var cx = require('react/lib/cx');
+
+var AperioStore = require('../stores/AperioStore');
+var AperioApi = require('../AperioApi');
+
+var TimelineFilters = require('./TimelineFilters.react');
+var Timeline = require('./Timeline.react');
 var Footer = require('./Footer.react');
 var Header = require('./Header.react');
-var MainSection = require('./MainSection.react');
-var React = require('react');
-var AperioStore = require('../stores/AperioStore');
-var TimelineFilters = require('./TimelineFilters.react');
 
 var AperioApp = React.createClass({
-
   getInitialState: function() {
     return {
       currentUser: AperioStore.getCurrentUser()
@@ -15,6 +18,7 @@ var AperioApp = React.createClass({
 
   componentDidMount: function() {
     AperioStore.addChangeListener(this._onChange);
+    AperioApi.loadUser();
   },
 
   componentWillUnmount: function() {
@@ -23,7 +27,16 @@ var AperioApp = React.createClass({
 
   render: function() {
     return (
-      <TimelineFilters user={this.state.currentUser} onFilter={this._onFilter}/>
+      <div className="container-fluid">
+        <div className="row">
+          <div className="col-md-offset-1 col-md-7">
+            <Timeline />
+          </div>
+          <div className="col-md-3">
+            <TimelineFilters user={this.state.currentUser} onFilter={this._onFilter}/>
+          </div>
+        </div>
+      </div>
     )
   },
 
@@ -32,7 +45,10 @@ var AperioApp = React.createClass({
   },
 
   _onChange: function() {
-    this.setState(getAperioState());
+    this.setState({
+      currentUser: AperioStore.getCurrentUser(),
+      timeline: AperioStore.getCurrentTimeline()
+    });
   }
 
 });

@@ -1,7 +1,6 @@
 var keyMirror = require('keymirror');
 
 module.exports = keyMirror({
-  ORG_CREATE: null,
-  ORG_DESTROY: null,
-  ORG_UPDATE: null
+  LOAD_USER: null,
+  LOAD_TIMELINE: null
 });

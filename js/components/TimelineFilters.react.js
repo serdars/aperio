@@ -27,7 +27,7 @@ var TimelineFilters = React.createClass({
 
   _getHeaderDiv: function() {
     var headerElements = [ ];
-    var mainMessage = "ALL ORGANIZATIONS"
+    var mainMessage = "ALL"
 
     if(this.state.filteredBy == ORG_FILTER || this.state.filteredBy == GROUP_FILTER) {
       headerElements.push(<a href="#" onClick={this._resetFilters}> {mainMessage} </a>);
@@ -40,6 +40,10 @@ var TimelineFilters = React.createClass({
   },
 
   render: function() {
+    if (this.props.user == null) {
+      return(<div />);
+    }
+
     var listItems = [ ];
     var visibleFilterList;
 
