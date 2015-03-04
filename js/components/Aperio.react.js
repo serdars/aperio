@@ -11,14 +11,11 @@ var Header = require('./Header.react');
 
 var AperioApp = React.createClass({
   getInitialState: function() {
-    return {
-      currentUser: AperioStore.getCurrentUser()
-    };
+    return { };
   },
 
   componentDidMount: function() {
     AperioStore.addChangeListener(this._onChange);
-    AperioApi.loadUser();
   },
 
   componentWillUnmount: function() {
@@ -33,7 +30,7 @@ var AperioApp = React.createClass({
             <Timeline />
           </div>
           <div className="col-md-3">
-            <TimelineFilters user={this.state.currentUser} onFilter={this._onFilter}/>
+            <TimelineFilters onFilter={this._onFilter}/>
           </div>
         </div>
       </div>
@@ -41,14 +38,11 @@ var AperioApp = React.createClass({
   },
 
   _onFilter: function(filters) {
-    console.log("Filters: " + filters.filteredBy + filters.filterOrg)
+    console.log("Filtered!")
   },
 
   _onChange: function() {
-    this.setState({
-      currentUser: AperioStore.getCurrentUser(),
-      timeline: AperioStore.getCurrentTimeline()
-    });
+    // Nothing to do for now.
   }
 
 });

@@ -16,10 +16,12 @@ var ORG_FILTER = "FILTER_ORG"
 // JOIN_APERIO   = 0
 // ORG_CREATE    = 1
 // GROUP_CREATE  = 2
+// GROUP_JOIN    = 3
 var ACTION_TEXT = [
   " joined Aperio ",
   " created organization ",
-  " created group "
+  " created group ",
+  " joined group "
 ]
 
 function getActionText(actionId) {
