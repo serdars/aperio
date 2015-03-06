@@ -24,13 +24,16 @@ var AperioApp = React.createClass({
 
   render: function() {
     return (
-      <div className="container-fluid">
-        <div className="row">
-          <div className="col-md-offset-1 col-md-7">
-            <Timeline />
-          </div>
-          <div className="col-md-3">
-            <TimelineFilters onFilter={this._onFilter}/>
+      <div>
+        <Header />
+        <div className="container-fluid">
+          <div className="row">
+            <div className="col-md-offset-1 col-md-7">
+              <Timeline />
+            </div>
+            <div className="col-md-3">
+              <TimelineFilters onFilter={this._onFilter}/>
+            </div>
           </div>
         </div>
       </div>
