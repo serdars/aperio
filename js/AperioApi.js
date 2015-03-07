@@ -1,5 +1,4 @@
 var request = require('superagent');
-
 var AperioActions = require('./actions/AperioActions');
 
 function loadUser() {

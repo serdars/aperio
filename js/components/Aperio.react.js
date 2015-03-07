@@ -1,55 +1,65 @@
 var React = require('react');
-var cx = require('react/lib/cx');
 
-var AperioStore = require('../stores/AperioStore');
-var AperioApi = require('../AperioApi');
+var RouteStore = require('../stores/RouteStore');
+var AperioActions = require('../actions/AperioActions');
+var AperioConstants = require('../constants/AperioConstants');
+var Routing = require('../mixins/Routing');
 
-var TimelineFilters = require('./TimelineFilters.react');
 var Timeline = require('./Timeline.react');
 var Join = require('./Join.react');
-var Footer = require('./Footer.react');
 var Header = require('./Header.react');
 
 var AperioApp = React.createClass({
+  mixins: [Routing],
+
+  handleRouteChange: function(newUrl, fromHistory) {
+    AperioActions.changeUrl(newUrl, fromHistory);
+  },
+
   getInitialState: function() {
-    return { };
+    return {
+      view: null
+    };
   },
 
   componentDidMount: function() {
-    AperioStore.addChangeListener(this._onChange);
+    RouteStore.addChangeListener(this._onChange);
+    this.handleRouteChange(this.getCurrentUrl(), false);
+  },
+
+  _onChange: function() {
+    this.setState({
+      view: RouteStore.getCurrentView()
+    });
   },
 
   componentWillUnmount: function() {
-    AperioStore.removeChangeListener(this._onChange);
+    RouteStore.removeChangeListener(this._onChange);
   },
 
   render: function() {
+    var currentView = [ ];
+
+    switch(this.state.view) {
+      case AperioConstants.TIMELINE_VIEW:
+        currentView.push(<Timeline />);
+        break;
+      case AperioConstants.JOIN_VIEW:
+        currentView.push(<Join />);
+        break;
+      default:
+        currentView.push(<div> View not found </div>);
+    }
+
     return (
       <div>
         <Header />
         <div className="container-fluid">
-          <div className="row">
-            <div className="col-sm-offset-1 col-sm-7">
-              <Join />
-              <Timeline />
-            </div>
-            <div className="col-sm-3">
-              <TimelineFilters onFilter={this._onFilter}/>
-            </div>
-          </div>
+          {currentView}
         </div>
       </div>
     )
-  },
-
-  _onFilter: function(filters) {
-    console.log("Filtered!")
-  },
-
-  _onChange: function() {
-    // Nothing to do for now.
   }
-
 });
 
 module.exports = AperioApp;

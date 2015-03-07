@@ -10,7 +10,8 @@
     "object-assign": "^1.0.0",
     "react": "^0.12.0",
     "react-bootstrap": "^0.16.0",
-    "superagent" :"^0.21.0"
+    "superagent" :"^0.21.0",
+    "route-recognizer": "^0.1.5"
   },
   "devDependencies": {
     "browserify": "^6.2.0",
