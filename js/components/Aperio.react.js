@@ -6,6 +6,7 @@ var AperioApi = require('../AperioApi');
 
 var TimelineFilters = require('./TimelineFilters.react');
 var Timeline = require('./Timeline.react');
+var Join = require('./Join.react');
 var Footer = require('./Footer.react');
 var Header = require('./Header.react');
 
@@ -28,10 +29,11 @@ var AperioApp = React.createClass({
         <Header />
         <div className="container-fluid">
           <div className="row">
-            <div className="col-md-offset-1 col-md-7">
+            <div className="col-sm-offset-1 col-sm-7">
+              <Join />
               <Timeline />
             </div>
-            <div className="col-md-3">
+            <div className="col-sm-3">
               <TimelineFilters onFilter={this._onFilter}/>
             </div>
           </div>
