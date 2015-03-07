@@ -2,11 +2,12 @@ var React = require('react');
 var ReactPropTypes = React.PropTypes;
 
 var AperioStore = require('../stores/AperioStore');
+var AperioApi = require('../AperioApi');
 
 var Header = React.createClass({
   getInitialState: function() {
     return {
-      user: null
+      user: AperioStore.getCurrentUser()
     };
   },
 
@@ -24,15 +25,20 @@ var Header = React.createClass({
     });
   },
 
+  _logout: function(event) {
+    event.preventDefault();
+    AperioApi.logout();
+  },
+
   render: function() {
     var currentUserItems = [ ];
 
     if (this.state.user != null) {
       currentUserItems.push(<li> <a href="#"> {this.state.user.name} </a> </li>);
-      currentUserItems.push(<li> <a href="#"> Logout </a> </li>);
+      currentUserItems.push(<li> <a href="#" onClick={this._logout}> Logout </a> </li>);
     }
     else {
-      currentUserItems.push(<li> <a href="#"> Login </a> </li>);
+      currentUserItems.push(<li> <a href="#/join"> Join / Login </a> </li>);
     }
 
     return (
@@ -53,7 +59,6 @@ var Header = React.createClass({
               </form>
             </li>
             <li> <a href="#/timeline"> Timeline </a> </li>
-            <li> <a href="#/join"> Join </a> </li>
           </ul>
           <ul className="nav navbar-nav navbar-right"> {currentUserItems} </ul>
         </div>

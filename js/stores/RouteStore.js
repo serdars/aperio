@@ -14,10 +14,14 @@ _router.add([{ path: "#/timeline", handler: routeTimeline }]);
 _router.add([{ path: "#/join", handler: routeJoin }]);
 
 function routeJoin() {
-  return AperioConstants.JOIN_VIEW;
+  return {
+    view: AperioConstants.JOIN_VIEW
+  };
 }
 function routeTimeline() {
-  return AperioConstants.TIMELINE_VIEW;
+  return {
+    view: AperioConstants.TIMELINE_VIEW
+  };
 }
 
 var RouteStore = assign({}, EventEmitter.prototype, {

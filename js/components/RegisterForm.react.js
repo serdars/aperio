@@ -13,7 +13,7 @@ var RegisterForm = React.createClass({
   _onSubmit: function(e) {
     e.preventDefault();
 
-    var username = this.refs.username.getDOMNode().value.trim();
+    var name = this.refs.name.getDOMNode().value.trim();
     var email = this.refs.email.getDOMNode().value.trim();
     var password = this.refs.password.getDOMNode().value.trim();
     var password_confirmation = this.refs.password_confirmation.getDOMNode().value.trim();
@@ -21,7 +21,7 @@ var RegisterForm = React.createClass({
     // TODO: Validation
 
     this.props.onSubmit({
-      username: username, email: email, password: password,
+      name: name, email: email, password: password,
       password_confirmation: password_confirmation
     });
   },
@@ -32,8 +32,8 @@ var RegisterForm = React.createClass({
         <div className="form-group">
           <AperioTextInput
             type="text" className="form-control"
-            id="username" placeholder="Username"
-            ref="username"
+            id="name" placeholder="Username"
+            ref="name"
           />
         </div>
         <div className="form-group">

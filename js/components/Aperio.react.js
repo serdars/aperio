@@ -3,6 +3,7 @@ var React = require('react');
 var RouteStore = require('../stores/RouteStore');
 var AperioActions = require('../actions/AperioActions');
 var AperioConstants = require('../constants/AperioConstants');
+var AperioApi = require('../AperioApi');
 var Routing = require('../mixins/Routing');
 
 var Timeline = require('./Timeline.react');
@@ -18,19 +19,19 @@ var AperioApp = React.createClass({
 
   getInitialState: function() {
     return {
-      view: null
+      view: null,
+      params: null
     };
   },
 
   componentDidMount: function() {
     RouteStore.addChangeListener(this._onChange);
+    AperioApi.loadUser()
     this.handleRouteChange(this.getCurrentUrl(), false);
   },
 
   _onChange: function() {
-    this.setState({
-      view: RouteStore.getCurrentView()
-    });
+    this.setState(RouteStore.getCurrentView());
   },
 
   componentWillUnmount: function() {
@@ -45,7 +46,7 @@ var AperioApp = React.createClass({
         currentView.push(<Timeline />);
         break;
       case AperioConstants.JOIN_VIEW:
-        currentView.push(<Join />);
+        currentView.push(<Join active="register"/>);
         break;
       default:
         currentView.push(<div> View not found </div>);

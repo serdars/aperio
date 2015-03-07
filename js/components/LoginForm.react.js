@@ -13,13 +13,13 @@ var LoginForm = React.createClass({
   _onSubmit: function(e) {
     e.preventDefault();
 
-    var username = this.refs.username.getDOMNode().value.trim();
+    var name = this.refs.name.getDOMNode().value.trim();
     var password = this.refs.password.getDOMNode().value.trim();
 
     // TODO: Validation
 
     this.props.onSubmit({
-      username: username, password: password
+      name: name, password: password
     });
   },
 
@@ -29,8 +29,8 @@ var LoginForm = React.createClass({
         <div className="form-group">
           <AperioTextInput
             type="text" className="form-control"
-            id="username" placeholder="Username"
-            ref="username"
+            id="name" placeholder="Username"
+            ref="name"
           />
         </div>
         <div className="form-group">
