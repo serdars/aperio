@@ -34,6 +34,21 @@ var Header = React.createClass({
     var currentUserItems = [ ];
 
     if (this.state.user != null) {
+      currentUserItems.push(
+        <li className="dropdown">
+          <a href="#" className="dropdown-toggle" data-toggle="dropdown"
+            role="button" aria-expanded="false"
+          >
+            Create <span className="caret"></span>
+          </a>
+          <ul className="dropdown-menu" role="menu">
+            <li> <a href="#/organizations/new">
+              New Organization
+            </a> </li>
+            <li><a href="#">New Conversation</a></li>
+          </ul>
+        </li>
+      );
       currentUserItems.push(<li> <a href="#"> {this.state.user.name} </a> </li>);
       currentUserItems.push(<li> <a href="#" onClick={this._logout}> Logout </a> </li>);
     }

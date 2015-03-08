@@ -23,8 +23,10 @@ var Join = React.createClass({
   _onSubmit: function(data) {
     if (this.state.active == "register") {
       AperioApi.register(data);
+      AperioActions.changeUrl("#/timeline", true);
     } else {
       AperioApi.login(data);
+      AperioActions.changeUrl("#/timeline", true);
     }
   },
 

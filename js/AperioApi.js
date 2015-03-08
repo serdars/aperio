@@ -54,6 +54,23 @@ var AperioApi = {
       });
   },
 
+  createOrganization: function(data) {
+    request
+      .post('http://localhost:3000/api/v1/organizations/create')
+      .send({
+        organization: data
+      })
+      .withCredentials()
+      .end(function(error, response) {
+        if (response.ok) {
+          AperioActions.createOrganization(response.body.organization);
+        } else {
+          // TODO: Display register failures
+          console.log("Failed to create the organization!")
+        }
+      });
+  },
+
   loadUser: function() {
     request
       .get("http://localhost:3000/api/v1/users/current")

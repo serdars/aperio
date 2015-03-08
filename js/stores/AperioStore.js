@@ -7,6 +7,7 @@ var CHANGE_EVENT = 'change';
 
 var _currentUser = null;
 var _timeline = null;
+var _organizations = [ ];
 
 var AperioStore = assign({}, EventEmitter.prototype, {
   getCurrentUser: function() {
@@ -42,6 +43,11 @@ AppDispatcher.register(function(action) {
 
     case AperioConstants.LOAD_TIMELINE:
       _timeline = action.timeline;
+      AperioStore.emitChange();
+      break;
+
+    case AperioConstants.CREATE_ORG:
+      _organizations.push(action.organization);
       AperioStore.emitChange();
       break;
 

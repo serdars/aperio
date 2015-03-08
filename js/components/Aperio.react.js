@@ -9,6 +9,7 @@ var Routing = require('../mixins/Routing');
 var Timeline = require('./Timeline.react');
 var Join = require('./Join.react');
 var Header = require('./Header.react');
+var NewOrganization = require('./NewOrganization.react');
 
 var AperioApp = React.createClass({
   mixins: [Routing],
@@ -47,6 +48,9 @@ var AperioApp = React.createClass({
         break;
       case AperioConstants.JOIN_VIEW:
         currentView.push(<Join active="register"/>);
+        break;
+      case AperioConstants.NEW_ORG_VIEW:
+        currentView.push(<NewOrganization />);
         break;
       default:
         currentView.push(<div> View not found </div>);

@@ -22,7 +22,14 @@ var AperioActions = {
       href: href,
       skipHistory: skipHistory
     });
-  }
+  },
+
+  createOrganization: function(organization) {
+    AppDispatcher.dispatch({
+      actionType: AperioConstants.CREATE_ORG,
+      organization: organization
+    });
+  },
 
 };
 

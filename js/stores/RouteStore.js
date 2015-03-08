@@ -12,6 +12,8 @@ var _router = new RouteRecognizer();
 _router.add([{ path: "/", handler: routeTimeline }]);
 _router.add([{ path: "#/timeline", handler: routeTimeline }]);
 _router.add([{ path: "#/join", handler: routeJoin }]);
+_router.add([{ path: "#/organizations/new", handler: routeNewOrganization }]);
+
 
 function routeJoin() {
   return {
@@ -21,6 +23,11 @@ function routeJoin() {
 function routeTimeline() {
   return {
     view: AperioConstants.TIMELINE_VIEW
+  };
+}
+function routeNewOrganization() {
+  return {
+    view: AperioConstants.NEW_ORG_VIEW
   };
 }
 

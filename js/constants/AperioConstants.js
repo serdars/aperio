@@ -5,5 +5,6 @@ module.exports = keyMirror({
   LOAD_TIMELINE: null,
   ROUTE_CHANGE: null,
   TIMELINE_VIEW: null,
-  JOIN_VIEW: null
+  JOIN_VIEW: null,
+  NEW_ORG_VIEW: null
 });
