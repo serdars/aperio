@@ -1,94 +1,125 @@
 var request = require('superagent');
-var AperioActions = require('./actions/AperioActions');
+var AperioConstants = require('./AperioConstants');
 
-function withCsrf(data) {
-
+var API_ITEM_TYPE = {
+  ITEM_TYPE_TIMELINE: "timeline",
+  ITEM_TYPE_ORGANIZATION: "organization",
+  ITEM_TYPE_CURRENT_USER: "current_user",
 }
-
 var AperioApi = {
-  login: function(data) {
+  getItem: function(itemType, id, callback) {
+    var type = API_ITEM_TYPE[itemType];
+    var getUrl;
+
+    if (id) {
+      getUrl = "/v1/" + type + "s/" + id;
+    } else {
+      getUrl = "/v1/" + type;
+    }
+
+    getUrl = "http://localhost:3000" + getUrl;
+
     request
-      .post('http://localhost:3000/api/v1/sessions/login')
+      .get(getUrl)
+      .withCredentials()
+      .end(function(error, response) {
+        var item;
+
+        if (response.ok) {
+          if (response.body == null) {
+            item = null
+          } else {
+            item = response.body[type];
+          }
+        }
+        else {
+          item = response.body;
+        }
+
+        if (callback != null) {
+          callback(response.ok, item);
+        }
+      });
+  },
+
+  logout: function(callback) {
+    request
+      .del('http://localhost:3000/v1/logout')
+      .withCredentials()
+      .end(function(error, response) {
+        if (callback != null) {
+          callback(response.ok, response.body);
+        }
+      });
+  },
+
+  login: function(data, callback) {
+    request
+      .post('http://localhost:3000/v1/login')
       .send({
         user_session: data
       })
       .withCredentials()
       .end(function(error, response) {
-        if (response.ok) {
-          AperioActions.loadUser(response.body.user);
-        } else {
-          // TODO: Display register failures
-          console.log("Failed to login the user!")
+        if (callback != null) {
+          if (response.ok) {
+            callback(true, response.body.user, null);
+          } else {
+            callback(true, null, response.body.error);
+          }
         }
       });
   },
 
-  logout: function() {
+  register: function(data, callback) {
     request
-      .del('http://localhost:3000/api/v1/sessions/logout')
-      .withCredentials()
-      .end(function(error, response) {
-        if (response.ok) {
-          AperioActions.loadUser(null);
-        } else {
-          // TODO: Display register failures
-          console.log("Failed to logout the user!")
-        }
-      });
-  },
-
-  register: function(data) {
-    request
-      .post('http://localhost:3000/api/v1/users/create')
+      .post('http://localhost:3000/v1/users')
       .send({
         user: data
       })
       .withCredentials()
       .end(function(error, response) {
-        if (response.ok) {
-          AperioActions.loadUser(response.body.user);
-        } else {
-          // TODO: Display register failures
-          console.log("Failed to create the user!")
+        if (callback != null) {
+          if (response.ok) {
+            callback(true, response.body.user, null);
+          } else {
+            callback(true, null, response.body.error);
+          }
         }
       });
   },
 
-  createOrganization: function(data) {
+  createItem: function(itemType, data, callback) {
+    var type = API_ITEM_TYPE[itemType];
+    var createUrl = "/v1/" + type + "s";
+    var postData = { };
+    postData[type] = data;
+
     request
-      .post('http://localhost:3000/api/v1/organizations/create')
-      .send({
-        organization: data
-      })
+      .post('http://localhost:3000' + createUrl)
+      .send(postData)
       .withCredentials()
       .end(function(error, response) {
+        var item;
+
         if (response.ok) {
-          AperioActions.createOrganization(response.body.organization);
-        } else {
-          // TODO: Display register failures
-          console.log("Failed to create the organization!")
+          if (response.body == null) {
+            item = null
+          } else {
+            item = response.body[type];
+          }
+        }
+        else {
+          item = response.body;
+        }
+
+        if (callback != null) {
+          callback(response.ok, item);
         }
       });
   },
 
-  loadUser: function() {
-    request
-      .get("http://localhost:3000/api/v1/users/current")
-      .withCredentials()
-      .end(function(error, response) {
-        if (response.ok && response.body != null) {
-          AperioActions.loadUser(response.body.user);
-        }
-      });
-  },
 
-  loadTimeline: function() {
-    request
-      .get("http://localhost:3000/api/v1/users/timeline")
-      .end(function(error, response) {
-        AperioActions.loadTimeline(response.body.timeline);
-      });
-  }
 };
 
 module.exports = AperioApi;

@@ -46,7 +46,7 @@ var Routing = {
       var href = target.attributes.href.value;
       this.handleRouteChange(href, false);
     }
-  }
+  },
 };
 
 module.exports = Routing;

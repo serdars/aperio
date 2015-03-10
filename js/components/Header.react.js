@@ -1,33 +1,33 @@
 var React = require('react');
 var ReactPropTypes = React.PropTypes;
 
-var AperioStore = require('../stores/AperioStore');
-var AperioApi = require('../AperioApi');
+var CurrentUserStore = require('../stores/CurrentUserStore');
+var AperioActions = require('../AperioActions');
 
 var Header = React.createClass({
   getInitialState: function() {
     return {
-      user: AperioStore.getCurrentUser()
+      user: CurrentUserStore.getCurrentUser()
     };
   },
 
   componentDidMount: function() {
-    AperioStore.addChangeListener(this._onChange);
+    CurrentUserStore.addChangeListener(this._onChange);
   },
 
   componentWillUnmount: function() {
-    AperioStore.removeChangeListener(this._onChange);
+    CurrentUserStore.removeChangeListener(this._onChange);
   },
 
   _onChange: function() {
     this.setState({
-      user: AperioStore.getCurrentUser()
+      user: CurrentUserStore.getCurrentUser()
     });
   },
 
   _logout: function(event) {
     event.preventDefault();
-    AperioApi.logout();
+    AperioActions.logout();
   },
 
   render: function() {

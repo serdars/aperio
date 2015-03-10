@@ -1,17 +1,7 @@
 var React = require('react');
-var ReactPropTypes = React.PropTypes;
 
-var AperioStore = require('../stores/AperioStore');
-var AperioApi = require('../AperioApi');
-
-var ListGroup = require('react-bootstrap').ListGroup;
-var ListGroupItem = require('react-bootstrap').ListGroupItem;
-var Badge = require('react-bootstrap').Badge;
-var ButtonToolbar = require('react-bootstrap').ButtonToolbar;
-var Button = require('react-bootstrap').Button;
-
-var GROUP_FILTER = "FILTER_GROUP"
-var ORG_FILTER = "FILTER_ORG"
+var TimelineStore = require('../stores/TimelineStore');
+var AperioConstants = require('../AperioConstants');
 
 // JOIN_APERIO   = 0
 // ORG_CREATE    = 1
@@ -30,7 +20,7 @@ function getActionText(actionId) {
 
 function getItemLink(itemData) {
   return (
-    <a href={"/" + itemData.type.toLowerCase() + "s/" + itemData.id} >
+    <a href={"#/" + itemData.type.toLowerCase() + "s/" + itemData.id} >
       {itemData.name}
     </a>
   );
@@ -44,23 +34,33 @@ var TimelineItems = React.createClass({
   },
 
   componentDidMount: function() {
-    AperioStore.addChangeListener(this._onChange);
-    AperioApi.loadTimeline();
+    TimelineStore.addChangeListener(this._onChange);
   },
 
   componentWillUnmount: function() {
-    AperioStore.removeChangeListener(this._onChange);
+    TimelineStore.removeChangeListener(this._onChange);
   },
 
   _onChange: function() {
     this.setState({
-      timeline: AperioStore.getCurrentTimeline()
+      timeline: TimelineStore.getTimeline()
     });
   },
 
   render: function() {
     var entries = [ ];
     var timeline = this.state.timeline;
+
+    if (TimelineStore.getState() == AperioConstants.ITEM_STATE_LOADING) {
+      entries.push(
+        <div className="panel panel-default">
+          <div className="panel-body">
+            "Updating timeline!"
+          </div>
+        </div>
+      );
+    }
+
     for(var key in timeline) {
       var entry = timeline[key];
       var entryElements = [ getItemLink(entry.subject), getActionText(entry.action_type) ];

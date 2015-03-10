@@ -2,41 +2,64 @@ var assign = require('object-assign');
 var RouteRecognizer = require('route-recognizer');
 var EventEmitter = require('events').EventEmitter;
 
-var AppDispatcher = require('../dispatcher/AppDispatcher');
-var AperioConstants = require('../constants/AperioConstants');
+var AperioDispatcher = require('../AperioDispatcher');
+var AperioConstants = require('../AperioConstants');
 
 var CHANGE_EVENT = 'change';
 
 var _currentPage = null;
+
+// Routes
 var _router = new RouteRecognizer();
 _router.add([{ path: "/", handler: routeTimeline }]);
 _router.add([{ path: "#/timeline", handler: routeTimeline }]);
 _router.add([{ path: "#/join", handler: routeJoin }]);
-_router.add([{ path: "#/organizations/new", handler: routeNewOrganization }]);
+_router.add([{ path: "#/organizations/:id", handler: routeOrganization }]);
 
-
-function routeJoin() {
-  return {
-    view: AperioConstants.JOIN_VIEW
-  };
-}
 function routeTimeline() {
   return {
-    view: AperioConstants.TIMELINE_VIEW
+    view: AperioConstants.VIEW_TIMELINE,
+    prefetch: {
+      type: AperioConstants.ITEM_TYPE_TIMELINE
+    }
   };
 }
-function routeNewOrganization() {
+function routeJoin() {
   return {
-    view: AperioConstants.NEW_ORG_VIEW
+    view: AperioConstants.VIEW_JOIN
   };
+}
+function routeOrganization(href, params) {
+  var viewParams = {
+    view: AperioConstants.VIEW_ORGANIZATION,
+    params: params
+  };
+
+  if (params.id != "new") {
+    viewParams["prefetch"] = {
+      type: AperioConstants.ITEM_TYPE_ORGANIZATION,
+      id: params.id
+    }
+  }
+
+  return viewParams;
+}
+
+function isFullUrl(url) {
+  return url.indexOf('http://') === 0 || url.indexOf('https://') === 0;
 }
 
 var RouteStore = assign({}, EventEmitter.prototype, {
-  handleChangeUrl: function(href, skipHistory) {
-    var isFullUrl = function(url) {
-      return url.indexOf('http://') === 0 || url.indexOf('https://') === 0;
+  prefetchForRoute: function(href) {
+    var results = _router.recognize(href);
+    if (results && results.length) {
+      var recognizedRoute = results[0].handler(href, results[0].params);
+      return recognizedRoute.prefetch;
     }
+    return null;
+  },
 
+  navigate: function(href, skipHistory) {
     // links with a protocol simply change the location
     if (isFullUrl(href)) {
       document.location = href;
@@ -69,10 +92,10 @@ var RouteStore = assign({}, EventEmitter.prototype, {
 });
 
 // Register callback to handle all updates
-AppDispatcher.register(function(action) {
+AperioDispatcher.register(function(action) {
   switch(action.actionType) {
-    case AperioConstants.ROUTE_CHANGE:
-      RouteStore.handleChangeUrl(action.href, action.skipHistory);
+    case AperioConstants.ACTION_ROUTE_CHANGE:
+      RouteStore.navigate(action.href, action.skipHistory);
       break;
 
     default:

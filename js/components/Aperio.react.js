@@ -1,21 +1,20 @@
 var React = require('react');
 
 var RouteStore = require('../stores/RouteStore');
-var AperioActions = require('../actions/AperioActions');
-var AperioConstants = require('../constants/AperioConstants');
-var AperioApi = require('../AperioApi');
+var AperioActions = require('../AperioActions');
+var AperioConstants = require('../AperioConstants');
 var Routing = require('../mixins/Routing');
 
 var Timeline = require('./Timeline.react');
 var Join = require('./Join.react');
 var Header = require('./Header.react');
-var NewOrganization = require('./NewOrganization.react');
+var Organization = require('./Organization.react');
 
 var AperioApp = React.createClass({
   mixins: [Routing],
 
-  handleRouteChange: function(newUrl, fromHistory) {
-    AperioActions.changeUrl(newUrl, fromHistory);
+  handleRouteChange: function(href, fromHistory) {
+    AperioActions.navigateTo(href, fromHistory);
   },
 
   getInitialState: function() {
@@ -27,12 +26,13 @@ var AperioApp = React.createClass({
 
   componentDidMount: function() {
     RouteStore.addChangeListener(this._onChange);
-    AperioApi.loadUser()
+    AperioActions.loadFromServer(AperioConstants.ITEM_TYPE_CURRENT_USER, null);
     this.handleRouteChange(this.getCurrentUrl(), false);
   },
 
   _onChange: function() {
-    this.setState(RouteStore.getCurrentView());
+    var currentView = RouteStore.getCurrentView();
+    this.setState(currentView);
   },
 
   componentWillUnmount: function() {
@@ -43,14 +43,14 @@ var AperioApp = React.createClass({
     var currentView = [ ];
 
     switch(this.state.view) {
-      case AperioConstants.TIMELINE_VIEW:
+      case AperioConstants.VIEW_TIMELINE:
         currentView.push(<Timeline />);
         break;
-      case AperioConstants.JOIN_VIEW:
+      case AperioConstants.VIEW_JOIN:
         currentView.push(<Join active="register"/>);
         break;
-      case AperioConstants.NEW_ORG_VIEW:
-        currentView.push(<NewOrganization />);
+      case AperioConstants.VIEW_ORGANIZATION:
+        currentView.push(<Organization id={this.state.params.id}/>);
         break;
       default:
         currentView.push(<div> View not found </div>);

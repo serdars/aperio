@@ -1,8 +1,6 @@
 var React = require('react');
 var ReactPropTypes = React.PropTypes;
 
-var AperioApi = require('../AperioApi');
-
 var AperioTextInput = require('./AperioTextInput.react');
 
 var LoginForm = React.createClass({
@@ -15,8 +13,6 @@ var LoginForm = React.createClass({
 
     var name = this.refs.name.getDOMNode().value.trim();
     var password = this.refs.password.getDOMNode().value.trim();
-
-    // TODO: Validation
 
     this.props.onSubmit({
       name: name, password: password

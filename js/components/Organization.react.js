@@ -1,65 +1,195 @@
 var React = require('react');
 var ReactPropTypes = React.PropTypes;
-var AperioActions = require('../actions/AperioActions');
-var AperioTextInput = require('./AperioTextInput.react');
 
-var cx = require('react/lib/cx');
+var AperioActions = require('../AperioActions');
+var OrganizationStore = require('../stores/OrganizationStore');
+var AperioTextInput = require('./AperioTextInput.react');
+var AperioConstants = require ("../AperioConstants");
 
 var Organization = React.createClass({
-
   propTypes: {
-   organization: ReactPropTypes.object.isRequired
+   id: ReactPropTypes.string.isRequired
+  },
+
+  isCreating: function() {
+    return (this.state.organization.item.id == null);
   },
 
   getInitialState: function() {
-    return {
-      isEditing: false
-    };
+    if (this.props.id == "new") {
+      return {
+        isEditing: false,
+        organization: {
+          item: {
+            id: null,
+            name: "",
+            motto: ""
+          },
+          state: null,
+          error: null,
+        }
+      };
+    } else {
+      return {
+        isEditing: false,
+        organization: OrganizationStore.getOrganization(this.props.id),
+      };
+    }
   },
 
-  render: function() {
-    var organization = this.props.organization;
+  componentDidMount: function() {
+    OrganizationStore.addChangeListener(this._onChange);
+  },
 
-    var input;
+  componentWillUnmount: function() {
+    OrganizationStore.removeChangeListener(this._onChange);
+  },
+
+  _onChange: function() {
+    var org = OrganizationStore.getOrganization();
+    var newState = { };
+
+    if (org.item == null) {
+      org.item = this.state.organization.item;
+    }
+    newState["organization"] = org;
+
+    if (org.state == AperioConstants.ITEM_STATE_DONE) {
+      newState["isEditing"] = false;
+    }
+
+    this.setState(newState);
+  },
+
+  _onManage: function() {
+    if (this.isCreating()) {
+      AperioActions.createItem(AperioConstants.ITEM_TYPE_ORGANIZATION, {
+        name: this.refs.name.getDOMNode().value.trim(),
+        motto: this.refs.motto.getDOMNode().value.trim()
+      });
+    } else if (this.state.isEditing) {
+      // Update is not implemented yet
+    }
+    this.setState({
+      isEditing: !this.state.isEditing
+    });
+  },
+
+  renderMessageView: function() {
+    var message = null;
+
+    if (this.state.organization != null) {
+      switch(this.state.organization.state) {
+        case AperioConstants.ITEM_STATE_LOADING:
+          message = "Loading organization";
+          break;
+        case AperioConstants.ITEM_STATE_ERROR:
+          message = this.state.organization.error.message;
+          break
+        default:
+          // no-op
+      }
+    }
+
+    if (message != null) {
+      return (
+        <div className="panel panel-default">
+          <div className="panel-body">
+            {message}
+          </div>
+        </div>
+      );
+    } else {
+      return (<div />);
+    }
+  },
+
+  renderActions: function() {
+    var manageButtonText;
     if (this.state.isEditing) {
-      input =
-        <AperioTextInput
-          className="edit"
-          onSave={this._onSave}
-          value={organization.text}
-        />;
+      manageButtonText = "Done";
+    } else if (this.isCreating()) {
+      manageButtonText = "Create";
+    } else {
+      manageButtonText = "Manage";
     }
 
     return (
-      <li
-        className={cx({
-          'completed': organization.complete,
-          'editing': this.state.isEditing
-        })}
-        key={organization.id}>
-        <div className="view">
-          <label onDoubleClick={this._onDoubleClick}>
-            {organization.text}
-          </label>
-          <button className="destroy" onClick={this._onDestroyClick} />
+      <div className="col-sm-4">
+        <div className="btn-group" role="group">
+          <button type="button" className="btn btn-default" onClick={this._onManage}>
+            {manageButtonText}
+          </button>
+          <button type="button" className="btn btn-info"
+            disabled={this.isCreating() || this.state.isEditing}
+          >
+            Analytics
+          </button>
+          <button type="button" className="btn btn-danger"
+            disabled={this.isCreating() || this.state.isEditing}
+          >
+            Delete
+          </button>
         </div>
-        {input}
-      </li>
+      </div>
+    )
+  },
+
+  renderShowView: function() {
+    var orgView = null;
+
+    if (this.state.organization.item == null) {
+      return (<div />);
+    }
+
+    if (this.state.isEditing || this.isCreating()) {
+      orgView = (
+        <div className="col-sm-8">
+          <div className="form-group">
+            <AperioTextInput
+              type="text" className="form-control"
+              id="name" placeholder="Organization Name"
+              ref="name" value={this.state.organization.item.name}
+            />
+          </div>
+          <div className="form-group">
+            <AperioTextInput
+              type="motto" className="form-control"
+              id="motto" placeholder="Motto"
+              ref="motto" value={this.state.organization.item.motto}
+            />
+          </div>
+        </div>
+      )
+    } else {
+      orgView = (
+        <div className="col-sm-8">
+          <h2> {this.state.organization.item.name} </h2>
+          <h4> {this.state.organization.item.motto} </h4>
+        </div>
+      )
+    }
+
+    return (
+      <div className="row">
+        {orgView}
+        {this.renderActions()}
+      </div>
     );
   },
 
-  _onDoubleClick: function() {
-    this.setState({isEditing: true});
-  },
+  render: function() {
+    var orgId = this.props.id;
 
-  _onSave: function(text) {
-    AperioActions.updateText(this.props.organization.id, text);
-    this.setState({isEditing: false});
+    return (
+      <div className="row">
+        <div className="col-sm-offset-2 col-sm-8">
+          {this.renderMessageView()}
+          {this.renderShowView()}
+        </div>
+      </div>
+    );
   },
-
-  _onDestroyClick: function() {
-    AperioActions.destroy(this.props.organization.id);
-  }
 
 });
 

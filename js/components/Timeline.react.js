@@ -1,9 +1,6 @@
 var React = require('react');
 var ReactPropTypes = React.PropTypes;
 
-var AperioStore = require('../stores/AperioStore');
-var AperioApi = require('../AperioApi');
-
 var TimelineItems = require('./TimelineItems.react');
 var TimelineFilters = require('./TimelineFilters.react');
 

@@ -1,7 +1,7 @@
 var React = require('react');
 var ReactPropTypes = React.PropTypes;
 
-var AperioStore = require('../stores/AperioStore');
+var CurrentUserStore = require('../stores/CurrentUserStore');
 var AperioApi = require('../AperioApi');
 
 var ListGroup = require('react-bootstrap').ListGroup;
@@ -29,12 +29,11 @@ var TimelineFilters = React.createClass({
   },
 
   componentDidMount: function() {
-    AperioStore.addChangeListener(this._onChange);
-    AperioApi.loadUser();
+    CurrentUserStore.addChangeListener(this._onChange);
   },
 
   componentWillUnmount: function() {
-    AperioStore.removeChangeListener(this._onChange);
+    CurrentUserStore.removeChangeListener(this._onChange);
   },
 
   // This will need to take the group or the organization.
@@ -101,7 +100,7 @@ var TimelineFilters = React.createClass({
 
   _onChange: function() {
     this.setState({
-      user: AperioStore.getCurrentUser()
+      user: CurrentUserStore.getCurrentUser()
     });
   },
 
