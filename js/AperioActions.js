@@ -8,13 +8,42 @@ var AperioActions = {
   navigateTo: function(href, skipHistory) {
     var prefetch = RouteStore.prefetchForRoute(href);
     if (prefetch != null) {
-      this.loadFromServer(prefetch.type, prefetch.id);
+      if (prefetch.id == null) {
+        this.loadDefault(prefetch.type);
+      } else {
+        this.loadFromServer(prefetch.type, prefetch.id);
+      }
     }
 
     AperioDispatcher.dispatch({
       actionType: AperioConstants.ACTION_ROUTE_CHANGE,
       href: href,
       skipHistory: skipHistory
+    });
+  },
+
+  loadDefault: function(type) {
+    var defaultItem;
+    switch(type) {
+      case AperioConstants.ITEM_TYPE_ORGANIZATION:
+        defaultItem = {
+          id: null,
+          name: "",
+          motto: ""
+        };
+        break;
+      default:
+        console.log("Unknown type: " + type);
+    };
+
+    AperioDispatcher.dispatch({
+      actionType: AperioConstants.ACTION_LOADED,
+      data: {
+        type: type,
+        id: null,
+        success: true,
+        item: defaultItem
+      }
     });
   },
 

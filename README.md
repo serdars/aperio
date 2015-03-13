@@ -2,4 +2,19 @@
 
 Meaningful Engagement Platform.
 
-* Maybe dispatch an initialize event before rendering.
+#### TODO:
+
+* Create Group.
+* Join group.
+* UI
+  * Timeline => Show my organizations on the right.
+  * Font based action buttons.
+* Invite to Organization.
+* Post Message to Group
+* 
+
+#### Out of Scope
+
+* Edit
+* Delete
+* Timeline Filtering

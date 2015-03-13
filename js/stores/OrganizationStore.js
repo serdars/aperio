@@ -5,18 +5,21 @@ var assign = require('object-assign');
 
 var CHANGE_EVENT = 'change';
 
-var _organization = null;
-var _state = null;
-var _error = null;
+var _organization = {
+  item: null,
+  state: null,
+  error: null
+};
+var _groups = { };
 
 var OrganizationStore = assign({}, EventEmitter.prototype, {
   // Accessor methods
   getOrganization: function(id) {
-    return {
-      item: _organization,
-      state: _state,
-      error: _error
-    };
+    return _organization;
+  },
+
+  getGroup: function(organizationId, id) {
+    return _groups[id];
   },
 
   // Event handling methods
@@ -40,8 +43,8 @@ AperioDispatcher.register(function(action) {
   switch(action.actionType) {
     case AperioConstants.ACTION_LOADING:
       if (action.data.type == AperioConstants.ITEM_TYPE_ORGANIZATION) {
-        _state = AperioConstants.ITEM_STATE_LOADING;
-        _error = null;
+        _organization.state = AperioConstants.ITEM_STATE_LOADING;
+        _organization.error = null;
         OrganizationStore.emitChange();
       }
       break;
@@ -50,12 +53,21 @@ AperioDispatcher.register(function(action) {
     case AperioConstants.ACTION_CREATED:
       if (action.data.type == AperioConstants.ITEM_TYPE_ORGANIZATION) {
         if (action.data.success) {
-          _state = AperioConstants.ITEM_STATE_DONE;
-          _error = null;
-          _organization = action.data.item;
+          _organization.state = AperioConstants.ITEM_STATE_DONE;
+          _organization.error = null;
+          _organization.item = action.data.item;
+
+          for (var key in action.data.item.groups) {
+            var group = action.data.item.groups[key];
+            _groups[group.id] = {
+              item: group,
+              state: null,
+              error: null
+            };
+          }
         } else {
-          _state = AperioConstants.ITEM_STATE_ERROR;
-          _error = action.data.item;
+          _organization.state = AperioConstants.ITEM_STATE_ERROR;
+          _organization.error = action.data.item;
         }
         OrganizationStore.emitChange();
       }
@@ -63,9 +75,9 @@ AperioDispatcher.register(function(action) {
 
     case AperioConstants.ACTION_CREATING:
       if (action.data.type == AperioConstants.ITEM_TYPE_ORGANIZATION) {
-        _state = AperioConstants.ITEM_STATE_LOADING;
-        _error = null;
-        _item = action.data.data;
+        _organization.state = AperioConstants.ITEM_STATE_LOADING;
+        _organization.error = null;
+        _organization.item = action.data.data;
         OrganizationStore.emitChange();
       }
       break;

@@ -20,7 +20,8 @@ function routeTimeline() {
   return {
     view: AperioConstants.VIEW_TIMELINE,
     prefetch: {
-      type: AperioConstants.ITEM_TYPE_TIMELINE
+      type: AperioConstants.ITEM_TYPE_TIMELINE,
+      id: ""
     }
   };
 }
@@ -30,19 +31,18 @@ function routeJoin() {
   };
 }
 function routeOrganization(href, params) {
-  var viewParams = {
-    view: AperioConstants.VIEW_ORGANIZATION,
-    params: params
-  };
+  if (params.id == "new") {
+    params.id = null;
+  }
 
-  if (params.id != "new") {
-    viewParams["prefetch"] = {
+  return {
+    view: AperioConstants.VIEW_ORGANIZATION,
+    params: params,
+    prefetch: {
       type: AperioConstants.ITEM_TYPE_ORGANIZATION,
       id: params.id
     }
-  }
-
-  return viewParams;
+  };
 }
 
 function isFullUrl(url) {

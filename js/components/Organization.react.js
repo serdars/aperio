@@ -3,8 +3,10 @@ var ReactPropTypes = React.PropTypes;
 
 var AperioActions = require('../AperioActions');
 var OrganizationStore = require('../stores/OrganizationStore');
-var AperioTextInput = require('./AperioTextInput.react');
 var AperioConstants = require ("../AperioConstants");
+
+var AperioTextInput = require('./AperioTextInput.react');
+var Group = require('./Group.react');
 
 var Organization = React.createClass({
   propTypes: {
@@ -16,25 +18,10 @@ var Organization = React.createClass({
   },
 
   getInitialState: function() {
-    if (this.props.id == "new") {
-      return {
-        isEditing: false,
-        organization: {
-          item: {
-            id: null,
-            name: "",
-            motto: ""
-          },
-          state: null,
-          error: null,
-        }
-      };
-    } else {
-      return {
-        isEditing: false,
-        organization: OrganizationStore.getOrganization(this.props.id),
-      };
-    }
+    return {
+      isEditing: false,
+      organization: OrganizationStore.getOrganization(this.props.id),
+    };
   },
 
   componentDidMount: function() {
@@ -47,13 +34,11 @@ var Organization = React.createClass({
 
   _onChange: function() {
     var org = OrganizationStore.getOrganization();
-    var newState = { };
+    var newState = {
+      organization: org
+    };
 
-    if (org.item == null) {
-      org.item = this.state.organization.item;
-    }
-    newState["organization"] = org;
-
+    // Mark editing complete if we're done.
     if (org.state == AperioConstants.ITEM_STATE_DONE) {
       newState["isEditing"] = false;
     }
@@ -120,10 +105,15 @@ var Organization = React.createClass({
           <button type="button" className="btn btn-default" onClick={this._onManage}>
             {manageButtonText}
           </button>
-          <button type="button" className="btn btn-info"
+          <button type="button" className="btn btn-default"
             disabled={this.isCreating() || this.state.isEditing}
           >
             Analytics
+          </button>
+          <button type="button" className="btn btn-default"
+            disabled={this.isCreating() || this.state.isEditing}
+          >
+            Join
           </button>
           <button type="button" className="btn btn-danger"
             disabled={this.isCreating() || this.state.isEditing}
@@ -137,9 +127,17 @@ var Organization = React.createClass({
 
   renderShowView: function() {
     var orgView = null;
+    var groupsView = [ ];
 
     if (this.state.organization.item == null) {
       return (<div />);
+    }
+
+    var org = this.state.organization.item;
+    for(var key in org.groups) {
+      groupsView.push(
+        <Group orgId={org.id} id={org.groups[key].id} />
+      );
     }
 
     if (this.state.isEditing || this.isCreating()) {
@@ -166,6 +164,7 @@ var Organization = React.createClass({
         <div className="col-sm-8">
           <h2> {this.state.organization.item.name} </h2>
           <h4> {this.state.organization.item.motto} </h4>
+          {groupsView}
         </div>
       )
     }
@@ -179,8 +178,6 @@ var Organization = React.createClass({
   },
 
   render: function() {
-    var orgId = this.props.id;
-
     return (
       <div className="row">
         <div className="col-sm-offset-2 col-sm-8">
