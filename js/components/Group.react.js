@@ -75,7 +75,7 @@ var Group = React.createClass({
     }
 
     return (
-      <div className="btn-group" role="group">
+      <div className="btn-group btn-group-xs pull-right" role="group">
         <button type="button" className="btn btn-default" onClick={this._onManage}>
           {manageButtonText}
         </button>
@@ -87,65 +87,73 @@ var Group = React.createClass({
         <button type="button" className="btn btn-danger"
           disabled={this.state.isEditing  || this.state.isCreating}
         >
-          Delete
+          <i className="fa fa-trash"></i>
         </button>
       </div>
     )
   },
 
-  renderShowView: function() {
-    var groupView = null;
-
-    if (this.props.id == null && !this.state.isCreating) {
-      groupView = (
-        <div className="panel-body">
-          <button type="button" className="btn btn-default" onClick={this._onCreate}>
-            Create Group
-          </button>
-        </div>
-      )
-    } else if (this.state.isEditing || this.state.isCreating) {
-      groupView = (
-        <div className="panel-body">
-          <div className="form-group">
-            <AperioTextInput
-              type="text" className="form-control"
-              id="name" placeholder="Group Name"
-              ref="name" value={this.state.group.item.name}
-            />
-          </div>
-          <div className="form-group">
-            <AperioTextInput
-              type="motto" className="form-control"
-              id="motto" placeholder="Motto"
-              ref="motto" value={this.state.group.item.motto}
-            />
-          </div>
-        </div>
-      )
-    } else {
-      groupView = (
-        <div className="panel-body">
-          <h5> {this.state.group.item.name} </h5>
-          <h6> {this.state.group.item.motto} </h6>
-        </div>
-      );
-    }
-
+  renderCreateView: function() {
     return (
-      <div className="panel panel-default">
-        {groupView}
+      <div className="panel-body">
+        <button type="button" className="btn btn-primary" onClick={this._onCreate}>
+          Create Group
+        </button>
+      </div>
+    );
+  },
+
+  renderEditView: function() {
+    return (
+      <div className="panel-body">
+        <div className="form-group">
+          <AperioTextInput
+            type="text" className="form-control"
+            id="name" placeholder="Group Name"
+            ref="name" value={this.state.group.item.name}
+          />
+        </div>
+        <div className="form-group">
+          <AperioTextInput
+            type="motto" className="form-control"
+            id="motto" placeholder="Motto"
+            ref="motto" value={this.state.group.item.motto}
+          />
+        </div>
         {this.renderActions()}
       </div>
     );
   },
 
-  render: function() {
+
+
+  renderShowView: function() {
     return (
-      <div className="row">
-        <div className="col-sm-offset-2 col-sm-8">
-          {this.renderShowView()}
+      <div className="panel-body">
+        <div className="pull-left">
+          <h5> {this.state.group.item.name} </h5>
+          <h6> {this.state.group.item.motto} </h6>
         </div>
+        {this.renderActions()}
+      </div>
+    );
+
+  },
+
+  render: function() {
+    var groupView;
+
+    if (this.props.id == null && !this.state.isCreating) {
+      groupView = this.renderCreateView();
+    } else if (this.state.isEditing || this.state.isCreating) {
+      groupView = this.renderEditView();
+    } else {
+      groupView = this.renderShowView();
+    }
+
+    return (
+      <div className="panel panel-default">
+        {groupView}
       </div>
     );
   },

@@ -89,6 +89,96 @@ var Organization = React.createClass({
     }
   },
 
+  renderOrgDisplayView: function() {
+    return (
+      <div className="organization-info pull-left">
+        <h2> {this.state.organization.item.name} </h2>
+        <h4> {this.state.organization.item.motto} </h4>
+      </div>
+    );
+  },
+
+  renderOrgInfoView: function() {
+    var viewDisplay;
+
+    if (this.state.isEditing || this.isCreating()) {
+      viewDisplay = this.renderOrgFormView();
+    } else {
+      viewDisplay = this.renderOrgDisplayView();
+    }
+
+    return (
+      <div className="row">
+        {viewDisplay}
+        {this.renderActions()}
+      </div>
+    );
+  },
+
+  renderOrgGroupView: function() {
+    var groupViews = [ ];
+    var org = this.state.organization.item;
+    var groups = OrganizationStore.getGroups();
+
+    var rowViews = [ ];
+
+    for (var key in groups) {
+      rowViews.push(
+        <div className="col-sm-4">
+          <Group orgId={org.id} id={groups[key].item.id} />
+        </div>
+      );
+
+      if (rowViews.length == 3) {
+        groupViews.push(
+          <div className="row">
+            {rowViews}
+          </div>
+        );
+
+        rowViews = [ ];
+      }
+    }
+
+    // For creating a group
+    rowViews.push(
+      <div className="col-sm-4">
+        <Group orgId={org.id} />
+      </div>
+    );
+
+    if (rowViews.length != 0) {
+      groupViews.push(
+        <div className="row">
+          {rowViews}
+        </div>
+      );
+    }
+
+    return groupViews;
+  },
+
+  renderOrgFormView: function() {
+    return (
+      <div className="organization-form pull-left">
+        <div className="form-group">
+          <AperioTextInput
+            type="text" className="form-control"
+            id="name" placeholder="Organization Name"
+            ref="name" value={this.state.organization.item.name}
+          />
+        </div>
+        <div className="form-group">
+          <AperioTextInput
+            type="motto" className="form-control"
+            id="motto" placeholder="Motto"
+            ref="motto" value={this.state.organization.item.motto}
+          />
+        </div>
+      </div>
+    );
+  },
+
   renderActions: function() {
     var manageButtonText;
     if (this.state.isEditing) {
@@ -100,92 +190,44 @@ var Organization = React.createClass({
     }
 
     return (
-      <div className="col-sm-4">
-        <div className="btn-group" role="group">
-          <button type="button" className="btn btn-default" onClick={this._onManage}>
-            {manageButtonText}
-          </button>
-          <button type="button" className="btn btn-default"
-            disabled={this.isCreating() || this.state.isEditing}
-          >
-            Analytics
-          </button>
-          <button type="button" className="btn btn-default"
-            disabled={this.isCreating() || this.state.isEditing}
-          >
-            Join
-          </button>
-          <button type="button" className="btn btn-danger"
-            disabled={this.isCreating() || this.state.isEditing}
-          >
-            Delete
-          </button>
-        </div>
+      <div className="btn-group pull-right" role="group">
+        <button type="button" className="btn btn-default" onClick={this._onManage}>
+          {manageButtonText}
+        </button>
+        <button type="button" className="btn btn-default"
+          disabled={this.isCreating() || this.state.isEditing}
+        >
+          Analytics
+        </button>
+        <button type="button" className="btn btn-default"
+          disabled={this.isCreating() || this.state.isEditing}
+        >
+          Join
+        </button>
+        <button type="button" className="btn btn-danger"
+          disabled={this.isCreating() || this.state.isEditing}
+        >
+          <i className="fa fa-trash fa-lg"></i>
+        </button>
       </div>
     )
   },
 
-  renderShowView: function() {
-    var orgView = null;
-    var groupsView = [ ];
+  render: function() {
+    var viewElements = [ ];
 
     if (this.state.organization.item == null) {
       return (<div />);
     }
 
-    var org = this.state.organization.item;
-    var groups = OrganizationStore.getGroups();
-    for(var key in groups) {
-      groupsView.push(
-        <Group orgId={org.id} id={groups[key].item.id} />
-      );
-    }
-
-    groupsView.push(<Group orgId={org.id} />);
-
-    if (this.state.isEditing || this.isCreating()) {
-      orgView = (
-        <div className="col-sm-8">
-          <div className="form-group">
-            <AperioTextInput
-              type="text" className="form-control"
-              id="name" placeholder="Organization Name"
-              ref="name" value={this.state.organization.item.name}
-            />
-          </div>
-          <div className="form-group">
-            <AperioTextInput
-              type="motto" className="form-control"
-              id="motto" placeholder="Motto"
-              ref="motto" value={this.state.organization.item.motto}
-            />
-          </div>
-        </div>
-      )
-    } else {
-      orgView = (
-        <div className="col-sm-8">
-          <h2> {this.state.organization.item.name} </h2>
-          <h4> {this.state.organization.item.motto} </h4>
-          {groupsView}
-        </div>
-      )
-    }
+    viewElements.push(this.renderMessageView());
+    viewElements.push(this.renderOrgInfoView());
+    viewElements.push(this.renderOrgGroupView());
 
     return (
       <div className="row">
-        {orgView}
-        {this.renderActions()}
-      </div>
-    );
-  },
-
-  render: function() {
-    return (
-      <div className="row">
-        <div className="col-sm-offset-2 col-sm-8">
-          {this.renderMessageView()}
-          {this.renderShowView()}
+        <div className="col-sm-offset-1 col-sm-10">
+          {viewElements}
         </div>
       </div>
     );
