@@ -11,6 +11,7 @@ var _organization = {
   error: null
 };
 var _groups = { };
+var _groupToCreate = null;
 
 var OrganizationStore = assign({}, EventEmitter.prototype, {
   // Accessor methods
@@ -19,7 +20,15 @@ var OrganizationStore = assign({}, EventEmitter.prototype, {
   },
 
   getGroup: function(organizationId, id) {
-    return _groups[id];
+    if (id == null) {
+      return _groupToCreate;
+    } else {
+      return _groups[id];
+    }
+  },
+
+  getGroups: function() {
+    return _groups;
   },
 
   // Event handling methods
@@ -46,6 +55,17 @@ AperioDispatcher.register(function(action) {
         _organization.state = AperioConstants.ITEM_STATE_LOADING;
         _organization.error = null;
         OrganizationStore.emitChange();
+      } else if (action.data.type == AperioConstants.ITEM_TYPE_GROUP) {
+        var grp;
+        if (action.data.item.id == null) {
+          grp = _groupToCreate;
+        } else {
+          grp = _groups[action.data.item.id];
+        }
+
+        grp.state = AperioConstants.ITEM_STATE_LOADING;
+        grp.error = null;
+        OrganizationStore.emitChange();
       }
       break;
 
@@ -69,6 +89,32 @@ AperioDispatcher.register(function(action) {
           _organization.state = AperioConstants.ITEM_STATE_ERROR;
           _organization.error = action.data.item;
         }
+
+        OrganizationStore.emitChange();
+      } else if (action.data.type == AperioConstants.ITEM_TYPE_GROUP) {
+        if (action.data.success) {
+          var grp = {
+            state: AperioConstants.ITEM_STATE_DONE,
+            error: null,
+            item: action.data.item
+          };
+
+          if (action.data.item.id == null) {
+            _groupToCreate = grp;
+          } else {
+            _groups[action.data.item.id] = grp;
+            _groupToCreate = null;
+          }
+        } else {
+          if (action.data.item.id == null) {
+            _groupToCreate.state = AperioConstants.ITEM_STATE_ERROR;
+            _groupToCreate.error = action.data.item;
+          } else {
+            _groups[action.data.item.id].state = AperioConstants.ITEM_STATE_ERROR;
+            _groups[action.data.item.id].error = action.data.item;
+          }
+        }
+
         OrganizationStore.emitChange();
       }
       break;
@@ -86,5 +132,7 @@ AperioDispatcher.register(function(action) {
       // no op
   }
 });
+
+OrganizationStore.setMaxListeners(20);
 
 module.exports = OrganizationStore;

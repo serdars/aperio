@@ -4,6 +4,7 @@ var AperioConstants = require('./AperioConstants');
 var API_ITEM_TYPE = {
   ITEM_TYPE_TIMELINE: "timeline",
   ITEM_TYPE_ORGANIZATION: "organization",
+  ITEM_TYPE_GROUP: "group",
   ITEM_TYPE_CURRENT_USER: "current_user",
 }
 var AperioApi = {

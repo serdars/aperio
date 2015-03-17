@@ -134,11 +134,14 @@ var Organization = React.createClass({
     }
 
     var org = this.state.organization.item;
-    for(var key in org.groups) {
+    var groups = OrganizationStore.getGroups();
+    for(var key in groups) {
       groupsView.push(
-        <Group orgId={org.id} id={org.groups[key].id} />
+        <Group orgId={org.id} id={groups[key].item.id} />
       );
     }
+
+    groupsView.push(<Group orgId={org.id} />);
 
     if (this.state.isEditing || this.isCreating()) {
       orgView = (

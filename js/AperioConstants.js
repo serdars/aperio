@@ -18,6 +18,7 @@ module.exports = keyMirror({
 
   ITEM_TYPE_TIMELINE: null,
   ITEM_TYPE_ORGANIZATION: null,
+  ITEM_TYPE_GROUP: null,
   ITEM_TYPE_CURRENT_USER: null,
 
   VIEW_TIMELINE: null,

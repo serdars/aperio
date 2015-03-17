@@ -9,12 +9,13 @@ var AperioConstants = require ("../AperioConstants");
 var Group = React.createClass({
   propTypes: {
     orgId: ReactPropTypes.number.isRequired,
-    id: ReactPropTypes.number.isRequired
+    id: ReactPropTypes.number
   },
 
   getInitialState: function() {
     return {
       isEditing: false,
+      isCreating: false,
       group: OrganizationStore.getGroup(this.props.orgId, this.props.id),
     };
   },
@@ -36,13 +37,28 @@ var Group = React.createClass({
     // Mark editing complete if we're done.
     if (group.state == AperioConstants.ITEM_STATE_DONE) {
       newState["isEditing"] = false;
+      newState["isCreating"] = false;
     }
 
     this.setState(newState);
   },
 
+  _onCreate: function() {
+    AperioActions.loadDefault(AperioConstants.ITEM_TYPE_GROUP);
+
+    this.setState({
+      isCreating: true
+    });
+  },
+
   _onManage: function() {
-    if (this.state.isEditing) {
+    if (this.state.isCreating) {
+      AperioActions.createItem(AperioConstants.ITEM_TYPE_GROUP, {
+        name: this.refs.name.getDOMNode().value.trim(),
+        motto: this.refs.motto.getDOMNode().value.trim(),
+        organization_id: this.props.orgId
+      });
+    } else if (this.state.isEditing) {
       // Update is not implemented yet
     }
     this.setState({
@@ -52,7 +68,7 @@ var Group = React.createClass({
 
   renderActions: function() {
     var manageButtonText;
-    if (this.state.isEditing) {
+    if (this.state.isEditing || this.state.isCreating) {
       manageButtonText = "Done";
     } else {
       manageButtonText = "Manage";
@@ -64,12 +80,12 @@ var Group = React.createClass({
           {manageButtonText}
         </button>
         <button type="button" className="btn btn-default"
-          disabled={this.state.isEditing}
+          disabled={this.state.isEditing || this.state.isCreating}
         >
           Join
         </button>
         <button type="button" className="btn btn-danger"
-          disabled={this.state.isEditing}
+          disabled={this.state.isEditing  || this.state.isCreating}
         >
           Delete
         </button>
@@ -80,13 +96,17 @@ var Group = React.createClass({
   renderShowView: function() {
     var groupView = null;
 
-    if (this.state.group.item == null) {
-      return (<div />);
-    }
-
-    if (this.state.isEditing) {
+    if (this.props.id == null && !this.state.isCreating) {
       groupView = (
-        <div className="col-sm-8">
+        <div className="panel-body">
+          <button type="button" className="btn btn-default" onClick={this._onCreate}>
+            Create Group
+          </button>
+        </div>
+      )
+    } else if (this.state.isEditing || this.state.isCreating) {
+      groupView = (
+        <div className="panel-body">
           <div className="form-group">
             <AperioTextInput
               type="text" className="form-control"

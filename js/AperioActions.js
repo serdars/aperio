@@ -32,6 +32,15 @@ var AperioActions = {
           motto: ""
         };
         break;
+      case AperioConstants.ITEM_TYPE_GROUP:
+        defaultItem = {
+          id: null,
+          name: "",
+          motto: "",
+          visible: true,
+          private: false
+        };
+        break;
       default:
         console.log("Unknown type: " + type);
     };
