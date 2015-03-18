@@ -11,6 +11,7 @@ module.exports = keyMirror({
   ACTION_LOGIN_FAILED: null,
   ACTION_REGISTER_SUCCESS: null,
   ACTION_REGISTER_FAILED: null,
+  ACTION_JOINED: null,
 
   ITEM_STATE_LOADING: null,
   ITEM_STATE_ERROR: null,

@@ -84,6 +84,13 @@ AperioDispatcher.register(function(action) {
       CurrentUserStore.emitChange();
       break;
 
+    case AperioConstants.ACTION_JOINED:
+      if (_current_user.id == action.data.membership.user_id) {
+        _current_user.memberships.push(action.data.membership.group_id);
+        CurrentUserStore.emitChange();
+      }
+      break;
+
 
     default:
       // no op

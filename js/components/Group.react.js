@@ -1,8 +1,10 @@
 var React = require('react');
 var ReactPropTypes = React.PropTypes;
+var cx = require('react/lib/cx');
 
 var AperioActions = require('../AperioActions');
 var OrganizationStore = require('../stores/OrganizationStore');
+var CurrentUserStore = require('../stores/CurrentUserStore');
 var AperioTextInput = require('./AperioTextInput.react');
 var AperioConstants = require ("../AperioConstants");
 
@@ -15,17 +17,25 @@ var Group = React.createClass({
   getInitialState: function() {
     return {
       isEditing: false,
-      isCreating: false,
+      memberships: CurrentUserStore.getCurrentUser().memberships,
       group: OrganizationStore.getGroup(this.props.orgId, this.props.id),
     };
   },
 
   componentDidMount: function() {
     OrganizationStore.addChangeListener(this._onChange);
+    CurrentUserStore.addChangeListener(this._onUserChange);
   },
 
   componentWillUnmount: function() {
     OrganizationStore.removeChangeListener(this._onChange);
+    CurrentUserStore.removeChangeListener(this._onUserChange);
+  },
+
+  _onUserChange: function() {
+    this.setState({
+      memberships: CurrentUserStore.getCurrentUser().memberships
+    });
   },
 
   _onChange: function() {
@@ -51,6 +61,12 @@ var Group = React.createClass({
     });
   },
 
+  _onJoin: function() {
+    AperioActions.join({
+      group_id: this.props.id
+    })
+  },
+
   _onManage: function() {
     if (this.state.isCreating) {
       AperioActions.createItem(AperioConstants.ITEM_TYPE_GROUP, {
@@ -66,6 +82,10 @@ var Group = React.createClass({
     });
   },
 
+  isMember: function() {
+    return (this.state.memberships.indexOf(this.props.id) != -1);
+  },
+
   renderActions: function() {
     var manageButtonText;
     if (this.state.isEditing || this.state.isCreating) {
@@ -74,15 +94,26 @@ var Group = React.createClass({
       manageButtonText = "Manage";
     }
 
+    var joinButtonText;
+    if (this.isMember()) {
+      joinButtonText = "Member";
+    } else {
+      joinButtonText = "Join";
+    }
+
     return (
       <div className="btn-group btn-group-xs pull-right" role="group">
         <button type="button" className="btn btn-default" onClick={this._onManage}>
           {manageButtonText}
         </button>
-        <button type="button" className="btn btn-default"
-          disabled={this.state.isEditing || this.state.isCreating}
+        <button type="button" className={cx({
+          "btn": true,
+          "btn-default": !this.isMember(),
+          "btn-info": this.isMember()
+        })} disabled={this.state.isEditing || this.state.isCreating || this.isMember()}
+          onClick={this._onJoin}
         >
-          Join
+          {joinButtonText}
         </button>
         <button type="button" className="btn btn-danger"
           disabled={this.state.isEditing  || this.state.isCreating}

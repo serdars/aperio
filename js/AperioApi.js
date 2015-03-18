@@ -72,6 +72,22 @@ var AperioApi = {
       });
   },
 
+  join: function(data, callback) {
+    request
+      .post('http://localhost:3000/v1/memberships')
+      .send(data)
+      .withCredentials()
+      .end(function(error, response) {
+        if (callback != null) {
+          if (response.ok) {
+            callback(true, response.body, null);
+          } else {
+            callback(true, null, response.body.error);
+          }
+        }
+      });
+  },
+
   register: function(data, callback) {
     request
       .post('http://localhost:3000/v1/users')

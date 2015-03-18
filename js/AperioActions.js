@@ -90,6 +90,21 @@ var AperioActions = {
     });
   },
 
+  join: function(data) {
+    AperioApi.join(data, function(success, membership, error) {
+      if (success) {
+        AperioDispatcher.dispatch({
+          actionType: AperioConstants.ACTION_JOINED,
+          data: {
+            membership: membership
+          }
+        });
+      } else {
+        console.log("Join failed sorry!")
+      }
+    });
+  },
+
   login: function(data) {
     AperioApi.login(data, function(success, user, error) {
       if (success) {
