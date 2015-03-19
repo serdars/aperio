@@ -1,8 +1,10 @@
 var React = require('react');
 var ReactPropTypes = React.PropTypes;
+var cx = require('react/lib/cx');
 
 var AperioActions = require('../AperioActions');
 var OrganizationStore = require('../stores/OrganizationStore');
+var CurrentUserStore = require('../stores/CurrentUserStore');
 var AperioConstants = require ("../AperioConstants");
 
 var AperioTextInput = require('./AperioTextInput.react');
@@ -18,18 +20,46 @@ var Organization = React.createClass({
   },
 
   getInitialState: function() {
+    var memberships;
+    if (CurrentUserStore.getCurrentUser()) {
+      memberships = CurrentUserStore.getCurrentUser().memberships;
+    } else {
+      memberships = [ ]
+    }
     return {
       isEditing: false,
+      memberships: memberships,
       organization: OrganizationStore.getOrganization(this.props.id),
     };
   },
 
   componentDidMount: function() {
     OrganizationStore.addChangeListener(this._onChange);
+    CurrentUserStore.addChangeListener(this._onUserChange);
   },
 
   componentWillUnmount: function() {
     OrganizationStore.removeChangeListener(this._onChange);
+    CurrentUserStore.removeChangeListener(this._onUserChange);
+  },
+
+  isMember: function() {
+    var groups = OrganizationStore.getGroups();
+
+    // Return true if user is a member of any group
+    for(var key in groups) {
+      if (this.state.memberships.indexOf(groups[key].item.id) != -1) {
+        return true;
+      }
+    }
+
+    return false;
+  },
+
+  _onUserChange: function() {
+    this.setState({
+      memberships: CurrentUserStore.getCurrentUser().memberships
+    });
   },
 
   _onChange: function() {
@@ -58,6 +88,12 @@ var Organization = React.createClass({
     this.setState({
       isEditing: !this.state.isEditing
     });
+  },
+
+  _onJoin: function() {
+    AperioActions.join({
+      organization_id: this.props.id
+    })
   },
 
   renderMessageView: function() {
@@ -189,6 +225,13 @@ var Organization = React.createClass({
       manageButtonText = "Manage";
     }
 
+    var joinButtonText;
+    if (this.isMember()) {
+      joinButtonText = "Member";
+    } else {
+      joinButtonText = "Join";
+    }
+
     return (
       <div className="btn-group pull-right" role="group">
         <button type="button" className="btn btn-default" onClick={this._onManage}>
@@ -199,10 +242,14 @@ var Organization = React.createClass({
         >
           Analytics
         </button>
-        <button type="button" className="btn btn-default"
-          disabled={this.isCreating() || this.state.isEditing}
+        <button type="button" className={cx({
+          "btn": true,
+          "btn-default": !this.isMember(),
+          "btn-info": this.isMember()
+        })} disabled={this.isCreating() || this.state.isEditing}
+          onClick={this._onJoin}
         >
-          Join
+          {joinButtonText}
         </button>
         <button type="button" className="btn btn-danger"
           disabled={this.isCreating() || this.state.isEditing}
@@ -222,7 +269,9 @@ var Organization = React.createClass({
 
     viewElements.push(this.renderMessageView());
     viewElements.push(this.renderOrgInfoView());
-    viewElements.push(this.renderOrgGroupView());
+    if (!this.isCreating()) {
+      viewElements.push(this.renderOrgGroupView());
+    }
 
     return (
       <div className="row">

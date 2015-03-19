@@ -5,3 +5,7 @@ body {
 .join-selection-btns {
   margin-bottom: 15px;
 }
+
+.organization-form {
+  width: 500px;
+}
