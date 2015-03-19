@@ -1,46 +1,50 @@
 var React = require('react');
-var ReactPropTypes = React.PropTypes;
 var cx = require('react/lib/cx');
 
-var CurrentUserStore = require('../stores/CurrentUserStore');
-var AperioActions = require('../AperioActions');
+var UserStore = require('../stores/UserStore');
+var ErrorStore = require('../stores/ErrorStore');
+var UserActions = require('../actions/UserActionCreators')
 
 var RegisterForm = require('./RegisterForm.react');
 var LoginForm = require('./LoginForm.react');
 
 var Join = React.createClass({
-  propTypes: {
-    active: ReactPropTypes.string
-  },
-
   getInitialState: function() {
     return {
-      active: this.props.active,
+      active: "register",
       error: null,
-      current_user: CurrentUserStore.getCurrentUser()
+      user: UserStore.getUser()
     }
   },
 
   componentDidMount: function() {
-    CurrentUserStore.addChangeListener(this._onChange);
+    UserStore.addChangeListener(this._onUserChange);
+    ErrorStore.addChangeListener(this._onError);
   },
 
   componentWillUnmount: function() {
-    CurrentUserStore.removeChangeListener(this._onChange);
+    UserStore.removeChangeListener(this._onUserChange);
+    ErrorStore.removeChangeListener(this._onError);
   },
 
-  _onChange: function() {
+  _onError: function() {
     this.setState({
-      error: CurrentUserStore.getError(),
-      current_user: CurrentUserStore.getCurrentUser()
+      error: ErrorStore.getError(this.state.active)
+    });
+  },
+
+  _onUserChange: function() {
+    this.setState({
+      error: null,
+      user: UserStore.getUser()
     });
   },
 
   _onSubmit: function(data) {
     if (this.state.active == "register") {
-      AperioActions.register(data);
+      UserActions.register(data);
     } else {
-      AperioActions.login(data);
+      UserActions.login(data);
     }
   },
 
@@ -63,6 +67,20 @@ var Join = React.createClass({
     } else {
       form = <LoginForm onSubmit={this._onSubmit} />
     }
+
+    var errors;
+    if (this.state.error != null) {
+      errors = (
+        <div className="panel panel-warning">
+          <div className="panel-body panel-warning">
+            Oops! Some problems: {this.state.error}
+          </div>
+        </div>
+      );
+    } else {
+      errors = (<div />);
+    }
+
     return (
       <div className="col-sm-offset-4 col-sm-4">
         <div className="btn-group btn-group-justified join-selection-btns"
@@ -87,6 +105,7 @@ var Join = React.createClass({
             </button>
           </div>
         </div>
+        {errors}
         {form}
       </div>
     );
@@ -100,18 +119,10 @@ var Join = React.createClass({
     );
   },
 
-  renderErrorView: function() {
-    return (
-      <div className="col-sm-offset-4 col-sm-4">
-        Oops! Some problems: {this.state.error}
-      </div>
-    );
-  },
-
   render: function() {
     var internalView;
 
-    if (this.state.current_user != null) {
+    if (this.state.user != null) {
       internalView = this.renderSuccessView();
     } else {
       internalView = this.renderJoinForm();

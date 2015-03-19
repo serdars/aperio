@@ -4,11 +4,11 @@ var ReactPropTypes = React.PropTypes;
 var CurrentUserStore = require('../stores/CurrentUserStore');
 var AperioApi = require('../AperioApi');
 
-var ListGroup = require('react-bootstrap').ListGroup;
-var ListGroupItem = require('react-bootstrap').ListGroupItem;
-var Badge = require('react-bootstrap').Badge;
-var ButtonToolbar = require('react-bootstrap').ButtonToolbar;
-var Button = require('react-bootstrap').Button;
+var ListGroup;// = require('react-bootstrap').ListGroup;
+var ListGroupItem;// = require('react-bootstrap').ListGroupItem;
+var Badge;// = require('react-bootstrap').Badge;
+var ButtonToolbar;// = require('react-bootstrap').ButtonToolbar;
+var Button;// = require('react-bootstrap').Button;
 
 var GROUP_FILTER = "FILTER_GROUP"
 var ORG_FILTER = "FILTER_ORG"

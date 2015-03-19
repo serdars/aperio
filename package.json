@@ -9,9 +9,9 @@
     "keymirror": "~0.1.0",
     "object-assign": "^1.0.0",
     "react": "^0.12.0",
-    "react-bootstrap": "^0.16.0",
+    "react-router": "^0.12.4",
     "superagent" :"^0.21.0",
-    "route-recognizer": "^0.1.5"
+    "underscore": "^1.6.0"
   },
   "devDependencies": {
     "browserify": "^6.2.0",

@@ -41,7 +41,7 @@ var CurrentUserStore = assign({}, EventEmitter.prototype, {
 AperioDispatcher.register(function(action) {
   var text;
 
-  switch(action.actionType) {
+  switch(action.type) {
     case AperioConstants.ACTION_LOADING:
       if (action.data.type == AperioConstants.ITEM_TYPE_CURRENT_USER) {
         _state = AperioConstants.ITEM_STATE_LOADING,

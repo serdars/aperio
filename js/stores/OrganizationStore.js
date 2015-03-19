@@ -49,7 +49,7 @@ var OrganizationStore = assign({}, EventEmitter.prototype, {
 AperioDispatcher.register(function(action) {
   var text;
 
-  switch(action.actionType) {
+  switch(action.type) {
     case AperioConstants.ACTION_LOADING:
       if (action.data.type == AperioConstants.ITEM_TYPE_ORGANIZATION) {
         _organization.state = AperioConstants.ITEM_STATE_LOADING;

@@ -93,7 +93,7 @@ var RouteStore = assign({}, EventEmitter.prototype, {
 
 // Register callback to handle all updates
 AperioDispatcher.register(function(action) {
-  switch(action.actionType) {
+  switch(action.type) {
     case AperioConstants.ACTION_ROUTE_CHANGE:
       RouteStore.navigate(action.href, action.skipHistory);
       break;

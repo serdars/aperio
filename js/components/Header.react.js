@@ -1,33 +1,34 @@
 var React = require('react');
 var ReactPropTypes = React.PropTypes;
+var Link = require('react-router').Link;
 
-var CurrentUserStore = require('../stores/CurrentUserStore');
-var AperioActions = require('../AperioActions');
+var UserStore = require('../stores/UserStore');
+var UserActions = require('../actions/UserActionCreators')
 
 var Header = React.createClass({
   getInitialState: function() {
     return {
-      user: CurrentUserStore.getCurrentUser()
+      user: UserStore.getUser()
     };
   },
 
   componentDidMount: function() {
-    CurrentUserStore.addChangeListener(this._onChange);
+    UserStore.addChangeListener(this._onChange);
   },
 
   componentWillUnmount: function() {
-    CurrentUserStore.removeChangeListener(this._onChange);
+    UserStore.removeChangeListener(this._onChange);
   },
 
   _onChange: function() {
     this.setState({
-      user: CurrentUserStore.getCurrentUser()
+      user: UserStore.getUser()
     });
   },
 
   _logout: function(event) {
     event.preventDefault();
-    AperioActions.logout();
+    UserActions.logout();
   },
 
   render: function() {
@@ -53,7 +54,7 @@ var Header = React.createClass({
       currentUserItems.push(<li> <a href="#" onClick={this._logout}> Logout </a> </li>);
     }
     else {
-      currentUserItems.push(<li> <a href="#/join"> Join / Login </a> </li>);
+      currentUserItems.push(<li> <Link to="join"> Join / Login </Link> </li>);
     }
 
     return (

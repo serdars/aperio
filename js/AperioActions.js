@@ -16,7 +16,7 @@ var AperioActions = {
     }
 
     AperioDispatcher.dispatch({
-      actionType: AperioConstants.ACTION_ROUTE_CHANGE,
+      type: AperioConstants.ACTION_ROUTE_CHANGE,
       href: href,
       skipHistory: skipHistory
     });
@@ -46,7 +46,7 @@ var AperioActions = {
     };
 
     AperioDispatcher.dispatch({
-      actionType: AperioConstants.ACTION_LOADED,
+      type: AperioConstants.ACTION_LOADED,
       data: {
         type: type,
         id: null,
@@ -58,7 +58,7 @@ var AperioActions = {
 
   loadFromServer: function(type, id) {
     AperioDispatcher.dispatch({
-      actionType: AperioConstants.ACTION_LOADING,
+      type: AperioConstants.ACTION_LOADING,
       data: {
         type: type,
         id: id
@@ -67,7 +67,7 @@ var AperioActions = {
 
     AperioApi.getItem(type, id, function(success, item) {
       AperioDispatcher.dispatch({
-        actionType: AperioConstants.ACTION_LOADED,
+        type: AperioConstants.ACTION_LOADED,
         data: {
           type: type,
           id: id,
@@ -82,7 +82,7 @@ var AperioActions = {
     AperioApi.logout(function(success, error) {
       if (success) {
         AperioDispatcher.dispatch({
-          actionType: AperioConstants.ACTION_LOGOUT
+          type: AperioConstants.ACTION_LOGOUT
         });
       } else {
         console.log("Logout failed sorry!")
@@ -94,7 +94,7 @@ var AperioActions = {
     AperioApi.join(data, function(success, membership, error) {
       if (success) {
         AperioDispatcher.dispatch({
-          actionType: AperioConstants.ACTION_JOINED,
+          type: AperioConstants.ACTION_JOINED,
           data: {
             membership: membership
           }
@@ -109,7 +109,7 @@ var AperioActions = {
     AperioApi.login(data, function(success, user, error) {
       if (success) {
         AperioDispatcher.dispatch({
-          actionType: AperioConstants.ACTION_LOGIN_SUCCESS,
+          type: AperioConstants.ACTION_LOGIN_SUCCESS,
           data: {
             user: user
           }
@@ -118,7 +118,7 @@ var AperioActions = {
         AperioActions.navigateTo("#/timeline", true);
       } else {
         AperioDispatcher.dispatch({
-          actionType: AperioConstants.ACTION_LOGIN_FAILED,
+          type: AperioConstants.ACTION_LOGIN_FAILED,
           data: {
             error: error
           }
@@ -131,7 +131,7 @@ var AperioActions = {
     AperioApi.register(data, function(success, user, error) {
       if (success) {
         AperioDispatcher.dispatch({
-          actionType: AperioConstants.ACTION_REGISTER_SUCCESS,
+          type: AperioConstants.ACTION_REGISTER_SUCCESS,
           data: {
             user: user
           }
@@ -140,7 +140,7 @@ var AperioActions = {
         AperioActions.navigateTo("#/timeline", true);
       } else {
         AperioDispatcher.dispatch({
-          actionType: AperioConstants.ACTION_REGISTER_FAILED,
+          type: AperioConstants.ACTION_REGISTER_FAILED,
           data: {
             error: error
           }
@@ -151,7 +151,7 @@ var AperioActions = {
 
   createItem: function(type, data) {
     AperioDispatcher.dispatch({
-      actionType: AperioConstants.ACTION_CREATING,
+      type: AperioConstants.ACTION_CREATING,
       data: {
         type: type,
         data: data
@@ -160,7 +160,7 @@ var AperioActions = {
 
     AperioApi.createItem(type, data, function(success, item) {
       AperioDispatcher.dispatch({
-        actionType: AperioConstants.ACTION_CREATED,
+        type: AperioConstants.ACTION_CREATED,
         data: {
           type: type,
           id: item.id,
