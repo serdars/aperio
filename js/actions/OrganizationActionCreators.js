@@ -41,7 +41,7 @@ var OrganizationActionCreators = {
         else {
           AperioDispatcher.dispatch({
             type: ActionTypes.API_ERROR,
-            key: "org_create",
+            key: "organization",
             error: response.body.message
           });
         }

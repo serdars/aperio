@@ -1,7 +1,6 @@
 var React = require('react');
 
 var TimelineStore = require('../stores/TimelineStore');
-var AperioConstants = require('../AperioConstants');
 
 // JOIN_APERIO   = 0
 // ORG_CREATE    = 1
@@ -12,7 +11,7 @@ var ACTION_TEXT = [
   " created organization ",
   " created group ",
   " joined group "
-]
+];
 
 function getActionText(actionId) {
   return ACTION_TEXT[actionId]
@@ -29,7 +28,7 @@ function getItemLink(itemData) {
 var TimelineItems = React.createClass({
   getInitialState: function() {
     return {
-      timeline: [ ]
+      timeline: null
     };
   },
 
@@ -43,7 +42,7 @@ var TimelineItems = React.createClass({
 
   _onChange: function() {
     this.setState({
-      timeline: TimelineStore.getTimeline()
+      timeline: TimelineStore.get()
     });
   },
 
@@ -51,7 +50,7 @@ var TimelineItems = React.createClass({
     var entries = [ ];
     var timeline = this.state.timeline;
 
-    if (TimelineStore.getState() == AperioConstants.ITEM_STATE_LOADING) {
+    if (timeline == null) {
       entries.push(
         <div className="panel panel-default">
           <div className="panel-body">

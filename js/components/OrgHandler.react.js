@@ -6,9 +6,11 @@ var OrganizationStore = require('../stores/OrganizationStore');
 var UserStore = require('../stores/UserStore');
 var ErrorStore = require('../stores/ErrorStore');
 var OrganizationActions = require('../actions/OrganizationActionCreators')
+var UserActions = require('../actions/UserActionCreators')
 
 var AperioTextInput = require('./AperioTextInput.react');
 var Group = require('./Group.react');
+var TimelineItems = require('./TimelineItems.react');
 
 _id = null;
 
@@ -20,6 +22,7 @@ var OrgHandler = React.createClass({
       _id = params.id;
       if (_id != "new") {
         OrganizationActions.get(_id);
+        UserActions.timeline();
       }
     },
 
@@ -294,9 +297,10 @@ var OrgHandler = React.createClass({
 
     viewElements.push(this.renderMessageView());
     viewElements.push(this.renderOrgInfoView());
-    // if (!this.isCreating()) {
-    //   viewElements.push(this.renderOrgGroupView());
-    // }
+    if (!this.isCreating()) {
+      viewElements.push(<TimelineItems />);
+      // viewElements.push(this.renderOrgGroupView());
+    }
 
     return (
       <div className="row">

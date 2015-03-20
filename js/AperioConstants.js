@@ -8,7 +8,8 @@ module.exports = {
     API_ERROR: null,
     ORGANIZATION_GET: null,
     ORGANIZATION_CREATE: null,
-    ORGANIZATION_UPDATE: null
+    ORGANIZATION_UPDATE: null,
+    TIMELINE_UPDATE: null
   }),
 
   Old: keyMirror({

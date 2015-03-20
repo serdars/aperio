@@ -24,7 +24,7 @@ Meaningful Engagement Platform.
   * Remove visible from group
   * Remove system from group
 * Create / Edit Group
-* Timeline
+* ~~Timeline~~
 * Join Group
 * Join Organization
 * Select Group
