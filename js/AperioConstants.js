@@ -6,7 +6,9 @@ module.exports = {
     USER_LOGIN: null,
     USER_LOGOUT: null,
     API_ERROR: null,
-    ORGANIZATION_CREATE: null
+    ORGANIZATION_GET: null,
+    ORGANIZATION_CREATE: null,
+    ORGANIZATION_UPDATE: null
   }),
 
   Old: keyMirror({

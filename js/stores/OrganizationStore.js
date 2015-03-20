@@ -13,6 +13,10 @@ var OrganizationStore = assign({}, EventEmitter.prototype, {
     return _organization;
   },
 
+  reset: function() {
+    _organization = null;
+  },
+
   // Event handling methods
   emitChange: function() {
     this.emit(CHANGE_EVENT);
@@ -33,6 +37,8 @@ AperioDispatcher.register(function(action) {
 
   switch(action.type) {
     case ActionTypes.ORGANIZATION_CREATE:
+    case ActionTypes.ORGANIZATION_UPDATE:
+    case ActionTypes.ORGANIZATION_GET:
       _organization = action.organization;
       OrganizationStore.emitChange();
       break;

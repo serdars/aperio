@@ -18,8 +18,13 @@ var OrgHandler = React.createClass({
   statics: {
     willTransitionTo: function(transition, params) {
       _id = params.id;
+      if (_id != "new") {
+        OrganizationActions.get(_id);
+      }
+    },
 
-      // TODO: Load organization if it is not new.
+    willTransitionFrom: function (transition, component) {
+      OrganizationStore.reset();
     }
   },
 
@@ -103,7 +108,7 @@ var OrgHandler = React.createClass({
 
   _onError: function() {
     this.setState({
-      error: ErrorStore.getError("org_create")
+      error: ErrorStore.getError("organization")
     });
   },
 
@@ -114,12 +119,15 @@ var OrgHandler = React.createClass({
         motto: this.refs.motto.getDOMNode().value.trim()
       });
     } else if (this.state.isEditing) {
-      // Update is not implemented yet
+      OrganizationActions.update(_id, {
+        name: this.refs.name.getDOMNode().value.trim(),
+        motto: this.refs.motto.getDOMNode().value.trim()
+      });
+    } else {
+      this.setState({
+        isEditing: true
+      });
     }
-
-    this.setState({
-      isEditing: !this.state.isEditing
-    });
   },
 
   _onJoin: function() {

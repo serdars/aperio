@@ -19,7 +19,7 @@ Meaningful Engagement Platform.
 * ~~App Init~~
 * ~~Header / Join~~
 * ~~Create Organization~~
-* Edit Organization
+* ~~Edit Organization~~
 * View Group
   * Remove visible from group
   * Remove system from group
@@ -33,3 +33,7 @@ Meaningful Engagement Platform.
 * Profile & Invites
 * Analytics & Invites
 * Discover
+
+## Bugs
+
+* Text boxes not empty going to new org page from org view page.
