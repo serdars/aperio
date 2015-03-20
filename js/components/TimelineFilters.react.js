@@ -100,7 +100,7 @@ var TimelineFilters = React.createClass({
 
   _onChange: function() {
     this.setState({
-      user: CurrentUserStore.getCurrentUser()
+      user: CurrentUserStore.getUser()
     });
   },
 

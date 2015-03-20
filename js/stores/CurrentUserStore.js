@@ -11,7 +11,7 @@ var _error = null;
 
 var CurrentUserStore = assign({}, EventEmitter.prototype, {
   // Accessor methods
-  getCurrentUser: function() {
+  getUser: function() {
     return _current_user;
   },
 

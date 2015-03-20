@@ -21,8 +21,8 @@ var Organization = React.createClass({
 
   getInitialState: function() {
     var memberships;
-    if (CurrentUserStore.getCurrentUser()) {
-      memberships = CurrentUserStore.getCurrentUser().memberships;
+    if (CurrentUserStore.getUser()) {
+      memberships = CurrentUserStore.getUser().memberships;
     } else {
       memberships = [ ]
     }
@@ -58,7 +58,7 @@ var Organization = React.createClass({
 
   _onUserChange: function() {
     this.setState({
-      memberships: CurrentUserStore.getCurrentUser().memberships
+      memberships: CurrentUserStore.getUser().memberships
     });
   },
 

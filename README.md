@@ -20,10 +20,11 @@ Meaningful Engagement Platform.
 * ~~Header / Join~~
 * ~~Create Organization~~
 * ~~Edit Organization~~
-* View Group
+* ~~View Group~~
+* Create Group
   * Remove visible from group
   * Remove system from group
-* Create / Edit Group
+* Edit Group
 * ~~Timeline~~
 * Join Group
 * Join Organization

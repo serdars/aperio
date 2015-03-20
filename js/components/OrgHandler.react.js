@@ -91,7 +91,7 @@ var OrgHandler = React.createClass({
 
   _onUserChange: function() {
     this.setState({
-      memberships: UserStore.getCurrentUser().memberships
+      memberships: UserStore.getUser().memberships
     });
   },
 
@@ -186,45 +186,26 @@ var OrgHandler = React.createClass({
 
   renderOrgGroupView: function() {
     var groupViews = [ ];
-    var org = this.state.organization.item;
-    var groups = OrganizationStore.getGroups();
+    var org = this.state.organization;
+    var groups = org.groups;
 
-    var rowViews = [ ];
+    var viewListItems = [ ];
 
     for (var key in groups) {
-      rowViews.push(
-        <div className="col-sm-4">
-          <Group orgId={org.id} id={groups[key].item.id} />
-        </div>
+      viewListItems.push(
+        <Group group={groups[key]} />
       );
-
-      if (rowViews.length == 3) {
-        groupViews.push(
-          <div className="row">
-            {rowViews}
-          </div>
-        );
-
-        rowViews = [ ];
-      }
     }
 
     // For creating a group
-    rowViews.push(
-      <div className="col-sm-4">
-        <Group orgId={org.id} />
-      </div>
+    // TODO
+    // viewListItems.push(<Group orgId={org.id} />);
+
+    return (
+      <ul className="list-group">
+        {viewListItems}
+      </ul>
     );
-
-    if (rowViews.length != 0) {
-      groupViews.push(
-        <div className="row">
-          {rowViews}
-        </div>
-      );
-    }
-
-    return groupViews;
   },
 
   renderOrgFormView: function() {
@@ -288,6 +269,24 @@ var OrgHandler = React.createClass({
     )
   },
 
+  renderOrgMainView: function() {
+    if (!this.isCreating()) {
+      return (
+        <div className="row">
+          <div className="col-sm-8">
+            <TimelineItems />
+          </div>
+          <div className="col-sm-4">
+            {this.renderOrgGroupView()}
+          </div>
+        </div>
+      );
+    } else {
+      return (<div />);
+    }
+
+  },
+
   render: function() {
     var viewElements = [ ];
 
@@ -297,10 +296,7 @@ var OrgHandler = React.createClass({
 
     viewElements.push(this.renderMessageView());
     viewElements.push(this.renderOrgInfoView());
-    if (!this.isCreating()) {
-      viewElements.push(<TimelineItems />);
-      // viewElements.push(this.renderOrgGroupView());
-    }
+    viewElements.push(this.renderOrgMainView());
 
     return (
       <div className="row">
