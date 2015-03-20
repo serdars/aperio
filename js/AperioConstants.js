@@ -9,7 +9,8 @@ module.exports = {
     ORGANIZATION_GET: null,
     ORGANIZATION_CREATE: null,
     ORGANIZATION_UPDATE: null,
-    TIMELINE_UPDATE: null
+    TIMELINE_UPDATE: null,
+    GROUP_CREATE: null
   }),
 
   Old: keyMirror({

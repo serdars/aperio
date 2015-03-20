@@ -21,9 +21,7 @@ Meaningful Engagement Platform.
 * ~~Create Organization~~
 * ~~Edit Organization~~
 * ~~View Group~~
-* Create Group
-  * Remove visible from group
-  * Remove system from group
+* ~~Create Group~~
 * Edit Group
 * ~~Timeline~~
 * Join Group

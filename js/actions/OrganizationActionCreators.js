@@ -70,6 +70,31 @@ var OrganizationActionCreators = {
           });
         }
       });
+  },
+
+  createGroup: function(data) {
+    request
+      .post('http://localhost:3000/v1/groups')
+      .send({
+        group: data
+      })
+      .withCredentials()
+      .end(function(error, response) {
+        if (response.ok) {
+          AperioDispatcher.dispatch({
+            type: ActionTypes.GROUP_CREATE,
+            group: response.body.group,
+            organizationId: response.body.organization_id
+          });
+        }
+        else {
+          AperioDispatcher.dispatch({
+            type: ActionTypes.API_ERROR,
+            key: "org_create",
+            error: response.body.message
+          });
+        }
+      });
   }
 };
 

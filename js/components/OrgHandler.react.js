@@ -193,13 +193,15 @@ var OrgHandler = React.createClass({
 
     for (var key in groups) {
       viewListItems.push(
-        <Group group={groups[key]} />
+        <Group orgId={_id} group={groups[key]} />
       );
     }
 
-    // For creating a group
-    // TODO
-    // viewListItems.push(<Group orgId={org.id} />);
+    viewListItems.push(<Group orgId={_id} group={{
+      id: null,
+      name: "",
+      motto: ""
+    }} />);
 
     return (
       <ul className="list-group">

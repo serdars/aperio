@@ -42,6 +42,12 @@ AperioDispatcher.register(function(action) {
       _organization = action.organization;
       OrganizationStore.emitChange();
       break;
+    case ActionTypes.GROUP_CREATE:
+      if (action.organizationId == _organization.id) {
+        _organization.groups.push(action.group);
+        OrganizationStore.emitChange();
+      }
+      break;
 
     default:
       // no op

@@ -2,12 +2,16 @@ var React = require('react');
 var ReactPropTypes = React.PropTypes;
 var cx = require('react/lib/cx');
 
+var OrganizationActions = require('../actions/OrganizationActionCreators')
+
 var UserStore = require('../stores/UserStore');
+var OrganizationStore = require('../stores/OrganizationStore');
 var AperioTextInput = require('./AperioTextInput.react');
 
 var Group = React.createClass({
   propTypes: {
-    group: ReactPropTypes.object.isRequired
+    group: ReactPropTypes.object.isRequired,
+    orgId: ReactPropTypes.string.isRequired,
   },
 
   getInitialState: function() {
@@ -20,16 +24,28 @@ var Group = React.createClass({
 
   componentDidMount: function() {
     UserStore.addChangeListener(this._onUserChange);
+    OrganizationStore.addChangeListener(this._onOrgChange);
   },
 
   componentWillUnmount: function() {
     UserStore.removeChangeListener(this._onUserChange);
+    OrganizationStore.removeChangeListener(this._onOrgChange);
   },
 
   _onUserChange: function() {
     this.setState({
       memberships: UserStore.getUser().memberships
     });
+  },
+
+  _onOrgChange: function() {
+    if (this.state.group.id == null && this.state.isEditing) {
+      // If we have been creating we are done now.
+      this.setState({
+        group: this.props.group,
+        isEditing: false
+      })
+    }
   },
 
   _onCreate: function() {
@@ -46,16 +62,17 @@ var Group = React.createClass({
   },
 
   _onManage: function() {
-    if (this.state.isCreating) {
-      // TODO
-      // AperioActions.createItem(AperioConstants.ITEM_TYPE_GROUP, {
-      //   name: this.refs.name.getDOMNode().value.trim(),
-      //   motto: this.refs.motto.getDOMNode().value.trim(),
-      //   organization_id: this.props.orgId
-      // });
-    } else if (this.state.isEditing) {
-      // TODO
-      // Update is not implemented yet
+    if (this.state.isEditing) {
+      if (this.props.group.id == null) {
+        OrganizationActions.createGroup({
+          organization_id: this.props.orgId,
+          name: this.refs.name.getDOMNode().value.trim(),
+          motto: this.refs.motto.getDOMNode().value.trim()
+        });
+      } else {
+        // Update
+        // TODO
+      }
     } else {
       this.setState({
         isEditing: true
@@ -69,7 +86,7 @@ var Group = React.createClass({
 
   renderActions: function() {
     var manageButtonText;
-    if (this.state.isEditing || this.state.isCreating) {
+    if (this.state.isEditing) {
       manageButtonText = "Done";
     } else {
       manageButtonText = "Manage";
@@ -91,7 +108,7 @@ var Group = React.createClass({
           "btn": true,
           "btn-default": !this.isMember(),
           "btn-info": this.isMember()
-        })} disabled={this.state.isEditing || this.state.isCreating || this.isMember()}
+        })} disabled={this.state.isEditing || this.isMember()}
           onClick={this._onJoin}
         >
           {joinButtonText}
@@ -102,17 +119,19 @@ var Group = React.createClass({
 
   renderCreateView: function() {
     return (
-      <a href="#" className="list-group-item list-group-item-info"
-        onClick={this._onCreate}
-      >
-        Create Group
-      </a>
+      <li className="list-group-item">
+        <button type="button" className="btn btn-info btn-block"
+          onClick={this._onCreate}
+        >
+          Create Group
+        </button>
+      </li>
     );
   },
 
   renderEditView: function() {
     return (
-      <div className="panel-body">
+      <li className="list-group-item">
         <div className="form-group">
           <AperioTextInput
             type="text" className="form-control"
@@ -128,7 +147,8 @@ var Group = React.createClass({
           />
         </div>
         {this.renderActions()}
-      </div>
+        <div className="clearfix" />
+      </li>
     );
   },
 
@@ -152,9 +172,9 @@ var Group = React.createClass({
   render: function() {
     var groupView;
 
-    if (this.props.group == null) {
+    if (this.props.group.id == null && !this.state.isEditing) {
       groupView = this.renderCreateView();
-    } else if (this.state.isEditing || this.state.isCreating) {
+    } else if (this.state.isEditing) {
       groupView = this.renderEditView();
     } else {
       groupView = this.renderShowView();
