@@ -6,6 +6,6 @@ body {
   margin-bottom: 15px;
 }
 
-.organization-form {
-  width: 500px;
+.organization-form-field {
+  padding: 10px;
 }

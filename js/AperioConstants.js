@@ -5,7 +5,8 @@ module.exports = {
     INIT_APP: null,
     USER_LOGIN: null,
     USER_LOGOUT: null,
-    API_ERROR: null
+    API_ERROR: null,
+    ORGANIZATION_CREATE: null
   }),
 
   Old: keyMirror({

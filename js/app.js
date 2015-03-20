@@ -6,6 +6,8 @@ var RouteHandler = Router.RouteHandler;
 
 var Header = require('./components/Header.react');
 var Join = require('./components/Join.react');
+var OrgHandler = require('./components/OrgHandler.react');
+
 var AppActions = require('./actions/AppActionCreators');
 var UserStore = require('./stores/UserStore');
 
@@ -27,6 +29,9 @@ var App = React.createClass({
 var routes = (
   <Route name="app" path="/" handler={App}>
     <Route name="join" handler={Join}/>
+    <Route name="organization" path="organizations/:id"
+      handler={OrgHandler}
+    />
   </Route>
 );
 

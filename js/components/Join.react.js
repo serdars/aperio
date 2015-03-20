@@ -3,7 +3,7 @@ var cx = require('react/lib/cx');
 
 var UserStore = require('../stores/UserStore');
 var ErrorStore = require('../stores/ErrorStore');
-var UserActions = require('../actions/UserActionCreators')
+var UserActions = require('../actions/UserActionCreators');
 
 var RegisterForm = require('./RegisterForm.react');
 var LoginForm = require('./LoginForm.react');

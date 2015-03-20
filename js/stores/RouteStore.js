@@ -1,5 +1,4 @@
 var assign = require('object-assign');
-var RouteRecognizer = require('route-recognizer');
 var EventEmitter = require('events').EventEmitter;
 
 var AperioDispatcher = require('../AperioDispatcher');
@@ -10,11 +9,11 @@ var CHANGE_EVENT = 'change';
 var _currentPage = null;
 
 // Routes
-var _router = new RouteRecognizer();
-_router.add([{ path: "/", handler: routeTimeline }]);
-_router.add([{ path: "#/timeline", handler: routeTimeline }]);
-_router.add([{ path: "#/join", handler: routeJoin }]);
-_router.add([{ path: "#/organizations/:id", handler: routeOrganization }]);
+// var _router = new RouteRecognizer();
+// _router.add([{ path: "/", handler: routeTimeline }]);
+// _router.add([{ path: "#/timeline", handler: routeTimeline }]);
+// _router.add([{ path: "#/join", handler: routeJoin }]);
+// _router.add([{ path: "#/organizations/:id", handler: routeOrganization }]);
 
 function routeTimeline() {
   return {

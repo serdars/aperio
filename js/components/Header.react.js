@@ -43,9 +43,11 @@ var Header = React.createClass({
             Create <span className="caret"></span>
           </a>
           <ul className="dropdown-menu" role="menu">
-            <li> <a href="#/organizations/new">
-              New Organization
-            </a> </li>
+            <li>
+              <Link to="organization" params={{id: "new"}}>
+                New Organization
+              </Link>
+            </li>
             <li><a href="#">New Conversation</a></li>
           </ul>
         </li>

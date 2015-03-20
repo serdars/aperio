@@ -18,12 +18,13 @@ Meaningful Engagement Platform.
 
 * ~~App Init~~
 * ~~Header / Join~~
-* Create Organization
+* ~~Create Organization~~
+* Edit Organization
+* View Group
   * Remove visible from group
   * Remove system from group
-* Edit Organization
-* Timeline
 * Create / Edit Group
+* Timeline
 * Join Group
 * Join Organization
 * Select Group
