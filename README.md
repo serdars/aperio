@@ -22,7 +22,7 @@ Meaningful Engagement Platform.
 * ~~Edit Organization~~
 * ~~View Group~~
 * ~~Create Group~~
-* Edit Group
+* ~~Edit Group~~
 * ~~Timeline~~
 * Join Group
 * Join Organization

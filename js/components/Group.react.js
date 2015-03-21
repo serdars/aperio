@@ -39,8 +39,8 @@ var Group = React.createClass({
   },
 
   _onOrgChange: function() {
-    if (this.state.group.id == null && this.state.isEditing) {
-      // If we have been creating we are done now.
+    if (this.state.isEditing) {
+      // If we have been creating or editing we are done now.
       this.setState({
         group: this.props.group,
         isEditing: false
@@ -70,8 +70,11 @@ var Group = React.createClass({
           motto: this.refs.motto.getDOMNode().value.trim()
         });
       } else {
-        // Update
-        // TODO
+        OrganizationActions.updateGroup(this.props.group.id, {
+          organization_id: this.props.orgId,
+          name: this.refs.name.getDOMNode().value.trim(),
+          motto: this.refs.motto.getDOMNode().value.trim()
+        });
       }
     } else {
       this.setState({

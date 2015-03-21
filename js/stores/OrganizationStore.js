@@ -48,6 +48,17 @@ AperioDispatcher.register(function(action) {
         OrganizationStore.emitChange();
       }
       break;
+    case ActionTypes.GROUP_UPDATE:
+      if (action.organizationId == _organization.id) {
+        for(var key in _organization.groups) {
+          if (_organization.groups[key].id == action.group.id) {
+            _organization.groups[key] = action.group;
+            OrganizationStore.emitChange();
+            break;
+          }
+        }
+      }
+      break;
 
     default:
       // no op

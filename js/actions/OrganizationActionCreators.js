@@ -90,7 +90,32 @@ var OrganizationActionCreators = {
         else {
           AperioDispatcher.dispatch({
             type: ActionTypes.API_ERROR,
-            key: "org_create",
+            key: "grp_create",
+            error: response.body.message
+          });
+        }
+      });
+  },
+
+  updateGroup: function(id, data) {
+    request
+      .put('http://localhost:3000/v1/groups/' + id)
+      .send({
+        group: data
+      })
+      .withCredentials()
+      .end(function(error, response) {
+        if (response.ok) {
+          AperioDispatcher.dispatch({
+            type: ActionTypes.GROUP_UPDATE,
+            group: response.body.group,
+            organizationId: response.body.organization_id
+          });
+        }
+        else {
+          AperioDispatcher.dispatch({
+            type: ActionTypes.API_ERROR,
+            key: "grp_update",
             error: response.body.message
           });
         }
