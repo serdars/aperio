@@ -59,6 +59,23 @@ AperioDispatcher.register(function(action) {
         }
       }
       break;
+    case ActionTypes.GROUP_JOIN:
+      for(var key in _organization.groups) {
+        if (action.membership.joinable_id == _organization.groups[key].id) {
+          _organization.groups[key].is_member = true;
+          OrganizationStore.emitChange();
+          break;
+        }
+      }
+      break;
+    case ActionTypes.ORGANIZATION_JOIN:
+      if (action.membership.joinable_id == _organization.id) {
+        _organization.is_member = true;
+        OrganizationStore.emitChange();
+        break;
+      }
+      break;
+
 
     default:
       // no op

@@ -3,7 +3,6 @@ var cx = require('react/lib/cx');
 var Navigation = require('react-router').Navigation;
 
 var OrganizationStore = require('../stores/OrganizationStore');
-var UserStore = require('../stores/UserStore');
 var ErrorStore = require('../stores/ErrorStore');
 var OrganizationActions = require('../actions/OrganizationActionCreators')
 var UserActions = require('../actions/UserActionCreators')
@@ -36,29 +35,10 @@ var OrgHandler = React.createClass({
   },
 
   isMember: function() {
-    // TODO: fix
-    return false;
-    // var groups = OrganizationStore.getGroups();
-    //
-    // // Return true if user is a member of any group
-    // for(var key in groups) {
-    //   if (this.state.memberships.indexOf(groups[key].item.id) != -1) {
-    //     return true;
-    //   }
-    // }
-    //
-    // return false;
+    return this.state.organization.is_member;
   },
 
   getInitialState: function() {
-    var memberships;
-    var user = UserStore.getUser();
-    if (user) {
-      memberships = user.memberships;
-    } else {
-      memberships = [ ];
-    }
-
     var organization;
     if (this.isCreating()) {
       organization = {
@@ -71,29 +51,20 @@ var OrgHandler = React.createClass({
 
     return {
       isEditing: false,
-      memberships: memberships,
       organization: organization,
     };
   },
 
   componentDidMount: function() {
     OrganizationStore.addChangeListener(this._onChange);
-    UserStore.addChangeListener(this._onUserChange);
     ErrorStore.addChangeListener(this._onError);
   },
 
   componentWillUnmount: function() {
     OrganizationStore.removeChangeListener(this._onChange);
-    UserStore.removeChangeListener(this._onUserChange);
     ErrorStore.removeChangeListener(this._onError);
   },
 
-
-  _onUserChange: function() {
-    this.setState({
-      memberships: UserStore.getUser().memberships
-    });
-  },
 
   _onChange: function() {
     var org = OrganizationStore.get();
@@ -134,10 +105,9 @@ var OrgHandler = React.createClass({
   },
 
   _onJoin: function() {
-    // TODO: fix
-    // AperioActions.join({
-    //   organization_id: this.props.id
-    // })
+    OrganizationActions.joinOrganization({
+      organization_id: _id
+    });
   },
 
   renderMessageView: function() {
@@ -260,9 +230,9 @@ var OrgHandler = React.createClass({
         </button>
         <button type="button" className={cx({
           "btn": true,
-          "btn-default": !this.isMember(),
-          "btn-info": this.isMember()
-        })} disabled={this.isCreating() || this.state.isEditing}
+          "btn-default": this.isMember(),
+          "btn-info": !this.isMember()
+        })} disabled={this.isCreating() || this.state.isEditing || this.isMember()}
           onClick={this._onJoin}
         >
           {joinButtonText}

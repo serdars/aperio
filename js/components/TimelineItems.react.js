@@ -2,15 +2,17 @@ var React = require('react');
 
 var TimelineStore = require('../stores/TimelineStore');
 
-// JOIN_APERIO   = 0
-// ORG_CREATE    = 1
-// GROUP_CREATE  = 2
-// GROUP_JOIN    = 3
+// JOIN_APERIO       = 0
+// ORG_CREATE        = 1
+// GROUP_CREATE      = 2
+// GROUP_JOIN        = 3
+// ORGANIZATION_JOIN = 4
 var ACTION_TEXT = [
   " joined Aperio ",
   " created organization ",
   " created group ",
-  " joined group "
+  " joined group ",
+  " joined organization "
 ];
 
 function getActionText(actionId) {

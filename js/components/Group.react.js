@@ -4,7 +4,6 @@ var cx = require('react/lib/cx');
 
 var OrganizationActions = require('../actions/OrganizationActionCreators')
 
-var UserStore = require('../stores/UserStore');
 var OrganizationStore = require('../stores/OrganizationStore');
 var AperioTextInput = require('./AperioTextInput.react');
 
@@ -17,25 +16,16 @@ var Group = React.createClass({
   getInitialState: function() {
     return {
       isEditing: false,
-      memberships: UserStore.getUser().memberships,
       group: this.props.group,
     };
   },
 
   componentDidMount: function() {
-    UserStore.addChangeListener(this._onUserChange);
     OrganizationStore.addChangeListener(this._onOrgChange);
   },
 
   componentWillUnmount: function() {
-    UserStore.removeChangeListener(this._onUserChange);
     OrganizationStore.removeChangeListener(this._onOrgChange);
-  },
-
-  _onUserChange: function() {
-    this.setState({
-      memberships: UserStore.getUser().memberships
-    });
   },
 
   _onOrgChange: function() {
@@ -55,10 +45,9 @@ var Group = React.createClass({
   },
 
   _onJoin: function() {
-    // TODO
-    // AperioActions.join({
-    //   group_id: this.props.id
-    // })
+    OrganizationActions.joinGroup({
+      group_id: this.props.group.id
+    });
   },
 
   _onManage: function() {
@@ -84,7 +73,7 @@ var Group = React.createClass({
   },
 
   isMember: function() {
-    return (this.state.memberships.indexOf(this.state.group.id) != -1);
+    return this.state.group.is_member;
   },
 
   renderActions: function() {
@@ -109,8 +98,8 @@ var Group = React.createClass({
         </button>
         <button type="button" className={cx({
           "btn": true,
-          "btn-default": !this.isMember(),
-          "btn-info": this.isMember()
+          "btn-default": this.isMember(),
+          "btn-info": !this.isMember()
         })} disabled={this.state.isEditing || this.isMember()}
           onClick={this._onJoin}
         >

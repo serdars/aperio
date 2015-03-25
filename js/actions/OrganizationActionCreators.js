@@ -120,6 +120,50 @@ var OrganizationActionCreators = {
           });
         }
       });
+  },
+
+  joinGroup: function(data) {
+    request
+      .post('http://localhost:3000/v1/memberships')
+      .send(data)
+      .withCredentials()
+      .end(function(error, response) {
+        if (response.ok) {
+          AperioDispatcher.dispatch({
+            type: ActionTypes.GROUP_JOIN,
+            membership: response.body
+          });
+        }
+        else {
+          AperioDispatcher.dispatch({
+            type: ActionTypes.API_ERROR,
+            key: "grp_join",
+            error: response.body.message
+          });
+        }
+      });
+  },
+
+  joinOrganization: function(data) {
+    request
+      .post('http://localhost:3000/v1/memberships')
+      .send(data)
+      .withCredentials()
+      .end(function(error, response) {
+        if (response.ok) {
+          AperioDispatcher.dispatch({
+            type: ActionTypes.ORGANIZATION_JOIN,
+            membership: response.body
+          });
+        }
+        else {
+          AperioDispatcher.dispatch({
+            type: ActionTypes.API_ERROR,
+            key: "org_join",
+            error: response.body.message
+          });
+        }
+      });
   }
 };
 

@@ -24,8 +24,8 @@ Meaningful Engagement Platform.
 * ~~Create Group~~
 * ~~Edit Group~~
 * ~~Timeline~~
-* Join Group
-* Join Organization
+* ~~Join Group~~
+* ~~Join Organization~~
 * Select Group
 * Add Members to group
 * Invite to Organization
