@@ -1,118 +1,117 @@
 var React = require('react');
-var ReactPropTypes = React.PropTypes;
 var cx = require('react/lib/cx');
+var Navigation = require('react-router').Navigation;
 
-var AperioActions = require('../AperioActions');
 var OrganizationStore = require('../stores/OrganizationStore');
-var CurrentUserStore = require('../stores/CurrentUserStore');
-var AperioConstants = require ("../AperioConstants");
+var ErrorStore = require('../stores/ErrorStore');
+var OrganizationActions = require('../actions/OrganizationActionCreators')
+var UserActions = require('../actions/UserActionCreators')
 
 var AperioTextInput = require('./AperioTextInput.react');
 var Group = require('./Group.react');
+var TimelineItems = require('./TimelineItems.react');
+
+_id = null;
 
 var Organization = React.createClass({
-  propTypes: {
-   id: ReactPropTypes.string.isRequired
+  mixins: [Navigation],
+
+  statics: {
+    willTransitionTo: function(transition, params) {
+      _id = params.id;
+      if (_id != "new") {
+        OrganizationActions.get(_id);
+        UserActions.timeline();
+      }
+    },
+
+    willTransitionFrom: function (transition, component) {
+      OrganizationStore.reset();
+    }
   },
 
   isCreating: function() {
-    return (this.state.organization.item.id == null);
+    return (_id == "new");
+  },
+
+  isMember: function() {
+    return this.state.organization.is_member;
   },
 
   getInitialState: function() {
-    var memberships;
-    if (CurrentUserStore.getUser()) {
-      memberships = CurrentUserStore.getUser().memberships;
+    var organization;
+    if (this.isCreating()) {
+      organization = {
+        name: "",
+        motto: ""
+      };
     } else {
-      memberships = [ ]
+      organization = OrganizationStore.get();
     }
+
     return {
       isEditing: false,
-      memberships: memberships,
-      organization: OrganizationStore.getOrganization(this.props.id),
+      organization: organization,
     };
   },
 
   componentDidMount: function() {
     OrganizationStore.addChangeListener(this._onChange);
-    CurrentUserStore.addChangeListener(this._onUserChange);
+    ErrorStore.addChangeListener(this._onError);
   },
 
   componentWillUnmount: function() {
     OrganizationStore.removeChangeListener(this._onChange);
-    CurrentUserStore.removeChangeListener(this._onUserChange);
+    ErrorStore.removeChangeListener(this._onError);
   },
 
-  isMember: function() {
-    var groups = OrganizationStore.getGroups();
 
-    // Return true if user is a member of any group
-    for(var key in groups) {
-      if (this.state.memberships.indexOf(groups[key].item.id) != -1) {
-        return true;
-      }
+  _onChange: function() {
+    var org = OrganizationStore.get();
+
+    if (this.isCreating()) {
+      // If we were creating, we are done now.
+      this.transitionTo("organization", {id: org.id})
     }
 
-    return false;
-  },
-
-  _onUserChange: function() {
     this.setState({
-      memberships: CurrentUserStore.getUser().memberships
+      organization: org,
+      isEditing: false
     });
   },
 
-  _onChange: function() {
-    var org = OrganizationStore.getOrganization();
-    var newState = {
-      organization: org
-    };
-
-    // Mark editing complete if we're done.
-    if (org.state == AperioConstants.ITEM_STATE_DONE) {
-      newState["isEditing"] = false;
-    }
-
-    this.setState(newState);
+  _onError: function() {
+    this.setState({
+      error: ErrorStore.getError("organization")
+    });
   },
 
   _onManage: function() {
     if (this.isCreating()) {
-      AperioActions.createItem(AperioConstants.ITEM_TYPE_ORGANIZATION, {
+      OrganizationActions.create({
         name: this.refs.name.getDOMNode().value.trim(),
         motto: this.refs.motto.getDOMNode().value.trim()
       });
     } else if (this.state.isEditing) {
-      // Update is not implemented yet
+      OrganizationActions.update(_id, {
+        name: this.refs.name.getDOMNode().value.trim(),
+        motto: this.refs.motto.getDOMNode().value.trim()
+      });
+    } else {
+      this.setState({
+        isEditing: true
+      });
     }
-    this.setState({
-      isEditing: !this.state.isEditing
-    });
   },
 
   _onJoin: function() {
-    AperioActions.join({
-      organization_id: this.props.id
-    })
+    OrganizationActions.joinOrganization({
+      organization_id: _id
+    });
   },
 
   renderMessageView: function() {
-    var message = null;
-
-    if (this.state.organization != null) {
-      switch(this.state.organization.state) {
-        case AperioConstants.ITEM_STATE_LOADING:
-          message = "Loading organization";
-          break;
-        case AperioConstants.ITEM_STATE_ERROR:
-          message = this.state.organization.error.message;
-          break
-        default:
-          // no-op
-      }
-    }
-
-    if (message != null) {
+    if (this.state.error != null) {
       return (
         <div className="panel panel-default">
           <div className="panel-body">
@@ -128,8 +127,12 @@ var Organization = React.createClass({
   renderOrgDisplayView: function() {
     return (
       <div className="organization-info pull-left">
-        <h2> {this.state.organization.item.name} </h2>
-        <h4> {this.state.organization.item.motto} </h4>
+        <h2>
+          {this.state.organization.name}
+          <small>
+            {this.state.organization.motto }
+          </small>
+        </h2>
       </div>
     );
   },
@@ -153,62 +156,45 @@ var Organization = React.createClass({
 
   renderOrgGroupView: function() {
     var groupViews = [ ];
-    var org = this.state.organization.item;
-    var groups = OrganizationStore.getGroups();
+    var org = this.state.organization;
+    var groups = org.groups;
 
-    var rowViews = [ ];
+    var viewListItems = [ ];
 
     for (var key in groups) {
-      rowViews.push(
-        <div className="col-sm-4">
-          <Group orgId={org.id} id={groups[key].item.id} />
-        </div>
+      viewListItems.push(
+        <Group orgId={_id} group={groups[key]} />
       );
-
-      if (rowViews.length == 3) {
-        groupViews.push(
-          <div className="row">
-            {rowViews}
-          </div>
-        );
-
-        rowViews = [ ];
-      }
     }
 
-    // For creating a group
-    rowViews.push(
-      <div className="col-sm-4">
-        <Group orgId={org.id} />
-      </div>
+    viewListItems.push(<Group orgId={_id} group={{
+      id: null,
+      name: "",
+      motto: ""
+    }} />);
+
+    return (
+      <ul className="list-group">
+        {viewListItems}
+      </ul>
     );
-
-    if (rowViews.length != 0) {
-      groupViews.push(
-        <div className="row">
-          {rowViews}
-        </div>
-      );
-    }
-
-    return groupViews;
   },
 
   renderOrgFormView: function() {
     return (
-      <div className="organization-form pull-left">
-        <div className="form-group">
+      <div className="form-inline pull-left">
+        <div className="form-group organization-form-field">
           <AperioTextInput
             type="text" className="form-control"
             id="name" placeholder="Organization Name"
-            ref="name" value={this.state.organization.item.name}
+            ref="name" value={this.state.organization.name}
           />
         </div>
-        <div className="form-group">
+        <div className="form-group organization-form-field">
           <AperioTextInput
             type="motto" className="form-control"
             id="motto" placeholder="Motto"
-            ref="motto" value={this.state.organization.item.motto}
+            ref="motto" value={this.state.organization.motto}
           />
         </div>
       </div>
@@ -225,7 +211,7 @@ var Organization = React.createClass({
       manageButtonText = "Manage";
     }
 
-    var joinButtonText;
+    var joinButtonText = "Join";
     if (this.isMember()) {
       joinButtonText = "Member";
     } else {
@@ -244,34 +230,45 @@ var Organization = React.createClass({
         </button>
         <button type="button" className={cx({
           "btn": true,
-          "btn-default": !this.isMember(),
-          "btn-info": this.isMember()
-        })} disabled={this.isCreating() || this.state.isEditing}
+          "btn-default": this.isMember(),
+          "btn-info": !this.isMember()
+        })} disabled={this.isCreating() || this.state.isEditing || this.isMember()}
           onClick={this._onJoin}
         >
           {joinButtonText}
-        </button>
-        <button type="button" className="btn btn-danger"
-          disabled={this.isCreating() || this.state.isEditing}
-        >
-          <i className="fa fa-trash fa-lg"></i>
         </button>
       </div>
     )
   },
 
+  renderOrgMainView: function() {
+    if (!this.isCreating()) {
+      return (
+        <div className="row">
+          <div className="col-sm-8">
+            <TimelineItems />
+          </div>
+          <div className="col-sm-4">
+            {this.renderOrgGroupView()}
+          </div>
+        </div>
+      );
+    } else {
+      return (<div />);
+    }
+
+  },
+
   render: function() {
     var viewElements = [ ];
 
-    if (this.state.organization.item == null) {
+    if (this.state.organization == null) {
       return (<div />);
     }
 
     viewElements.push(this.renderMessageView());
     viewElements.push(this.renderOrgInfoView());
-    if (!this.isCreating()) {
-      viewElements.push(this.renderOrgGroupView());
-    }
+    viewElements.push(this.renderOrgMainView());
 
     return (
       <div className="row">

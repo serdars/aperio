@@ -23,7 +23,6 @@ Meaningful Engagement Platform.
 * ~~View Group~~
 * ~~Create Group~~
 * ~~Edit Group~~
-* ~~Timeline~~
 * ~~Join Group~~
 * ~~Join Organization~~
 * Select Group
@@ -31,6 +30,7 @@ Meaningful Engagement Platform.
 * Invite to Organization
 * Profile & Invites
 * Analytics & Invites
+* Timeline
 * Discover
 
 ## Bugs
