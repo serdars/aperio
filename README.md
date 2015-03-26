@@ -25,11 +25,13 @@ Meaningful Engagement Platform.
 * ~~Edit Group~~
 * ~~Join Group~~
 * ~~Join Organization~~
-* Select Group
-* Add Members to group
-* Invite to Organization
+* ~~Invite to Organization~~
+* Select User to Invite
 * Profile & Invites
 * Analytics & Invites
+* Accept / Decline Invites
+* Select Group
+* Add Members to group
 * Timeline
 * Discover
 

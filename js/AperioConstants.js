@@ -13,7 +13,8 @@ module.exports = {
     TIMELINE_UPDATE:      null,
     GROUP_CREATE:         null,
     GROUP_UPDATE:         null,
-    GROUP_JOIN:           null
+    GROUP_JOIN:           null,
+    INVITATION_CREATE:    null,
   }),
 
   Old: keyMirror({

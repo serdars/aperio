@@ -164,7 +164,31 @@ var OrganizationActionCreators = {
           });
         }
       });
-  }
+  },
+
+  invite: function(data) {
+    request
+      .post('http://localhost:3000/v1/invitations')
+      .send({
+        invitation: data
+      })
+      .withCredentials()
+      .end(function(error, response) {
+        if (response.ok) {
+          AperioDispatcher.dispatch({
+            type: ActionTypes.INVITATION_CREATE,
+            invitation: response.body.invitation
+          });
+        }
+        else {
+          AperioDispatcher.dispatch({
+            type: ActionTypes.API_ERROR,
+            key: "inv_create",
+            error: response.body.message
+          });
+        }
+      });
+  },
 };
 
 module.exports = OrganizationActionCreators;

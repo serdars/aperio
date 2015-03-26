@@ -7,12 +7,14 @@ var TimelineStore = require('../stores/TimelineStore');
 // GROUP_CREATE      = 2
 // GROUP_JOIN        = 3
 // ORGANIZATION_JOIN = 4
+// INVITE            = 5
 var ACTION_TEXT = [
   " joined Aperio ",
   " created organization ",
   " created group ",
   " joined group ",
-  " joined organization "
+  " joined organization ",
+  " invited user to "
 ];
 
 function getActionText(actionId) {

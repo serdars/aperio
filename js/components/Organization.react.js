@@ -110,6 +110,13 @@ var Organization = React.createClass({
     });
   },
 
+  _onInvite: function() {
+    OrganizationActions.invite({
+      organization_id: _id,
+      invitee_id: this.refs.invitee.getDOMNode().value.trim()
+    });
+  },
+
   renderMessageView: function() {
     if (this.state.error != null) {
       return (
@@ -137,19 +144,40 @@ var Organization = React.createClass({
     );
   },
 
+  renderOrgJoinForm: function() {
+    return (
+      <div className="form-inline pull-right">
+        <div className="form-group invitation-form-field">
+          <AperioTextInput
+            type="text" className="form-control"
+            id="name" placeholder="Invite Someone"
+            ref="invitee"
+          />
+          <button type="button" className="btn btn-primary"
+            onClick={this._onInvite}
+          >
+            Invite
+          </button>
+        </div>
+      </div>
+    );
+  },
+
   renderOrgInfoView: function() {
-    var viewDisplay;
+    var viewDisplay = [ ];
 
     if (this.state.isEditing || this.isCreating()) {
-      viewDisplay = this.renderOrgFormView();
+      viewDisplay.push(this.renderOrgFormView());
+      viewDisplay.push(this.renderActions());
     } else {
-      viewDisplay = this.renderOrgDisplayView();
+      viewDisplay.push(this.renderOrgDisplayView());
+      viewDisplay.push(this.renderActions());
+      viewDisplay.push(this.renderOrgJoinForm());
     }
 
     return (
       <div className="row">
         {viewDisplay}
-        {this.renderActions()}
       </div>
     );
   },
