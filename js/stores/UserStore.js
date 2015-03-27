@@ -41,6 +41,17 @@ AperioDispatcher.register(function(action) {
       UserStore.emitChange();
       break;
 
+    case ActionTypes.USER_INVITATION_ACCEPTED:
+    case ActionTypes.USER_INVITATION_DECLINED:
+      for(var i = 0; i < _user.invitations.length; i++) {
+        if (_user.invitations[i].id == action.invitation.id) {
+          _user.invitations[i] = action.invitation;
+          UserStore.emitChange();
+          break;
+        }
+      }
+      break;
+
     default:
       // no op
   }

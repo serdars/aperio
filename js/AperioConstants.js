@@ -2,21 +2,24 @@ var keyMirror = require('keymirror');
 
 module.exports = {
   ActionTypes: keyMirror({
-    INIT_APP:             null,
-    USER_LOGIN:           null,
-    USER_LOGOUT:          null,
-    API_ERROR:            null,
-    ORGANIZATION_GET:     null,
-    ORGANIZATION_CREATE:  null,
-    ORGANIZATION_UPDATE:  null,
-    ORGANIZATION_JOIN:    null,
-    TIMELINE_UPDATE:      null,
-    GROUP_CREATE:         null,
-    GROUP_UPDATE:         null,
-    GROUP_JOIN:           null,
-    INVITATION_CREATE:    null,
-    USER_SEARCH_RESPONSE: null,
-    USER_INVITED:         null 
+    INIT_APP:                 null,
+    USER_REGISTER:            null,
+    USER_LOGIN:               null,
+    USER_LOGOUT:              null,
+    API_ERROR:                null,
+    ORGANIZATION_GET:         null,
+    ORGANIZATION_CREATE:      null,
+    ORGANIZATION_UPDATE:      null,
+    ORGANIZATION_JOIN:        null,
+    TIMELINE_UPDATE:          null,
+    GROUP_CREATE:             null,
+    GROUP_UPDATE:             null,
+    GROUP_JOIN:               null,
+    INVITATION_CREATE:        null,
+    USER_SEARCH_RESPONSE:     null,
+    USER_INVITED:             null,
+    USER_INVITATION_ACCEPTED: null,
+    USER_INVITATION_DECLINED: null
   }),
 
   Old: keyMirror({

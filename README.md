@@ -28,7 +28,7 @@ Meaningful Engagement Platform.
 * ~~Invite to Organization~~
 * ~~Select User to Invite~~
 * ~~Profile & Invites~~
-* Accept / Decline Invites
+* ~~Accept / Decline Invites~~
 * Analytics & Invites
 * Invite a non-existing user
 * Select Group

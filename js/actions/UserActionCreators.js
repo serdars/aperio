@@ -127,6 +127,46 @@ var UserActionCreators = {
           });
         }
       });
+  },
+
+  acceptInvite: function(invitationId) {
+    request
+      .post('http://localhost:3000/v1/invitations/' + invitationId + "/accept")
+      .withCredentials()
+      .end(function(error, response) {
+        if (response.ok) {
+          AperioDispatcher.dispatch({
+            type: ActionTypes.USER_INVITATION_ACCEPTED,
+            invitation: response.body.invitation
+          });
+        } else {
+          AperioDispatcher.dispatch({
+            type: ActionTypes.API_ERROR,
+            key: "user_invite_accept",
+            error: response.body.message
+          });
+        }
+      });
+  },
+
+  declineInvite: function(invitationId) {
+    request
+      .post('http://localhost:3000/v1/invitations/' + invitationId + "/decline")
+      .withCredentials()
+      .end(function(error, response) {
+        if (response.ok) {
+          AperioDispatcher.dispatch({
+            type: ActionTypes.USER_INVITATION_DECLINED,
+            invitation: response.body.invitation
+          });
+        } else {
+          AperioDispatcher.dispatch({
+            type: ActionTypes.API_ERROR,
+            key: "user_invite_decline",
+            error: response.body.message
+          });
+        }
+      });
   }
 };
 
