@@ -117,6 +117,10 @@ var Organization = React.createClass({
     });
   },
 
+  _onAnalytics: function() {
+    this.transitionTo("analytics", {id: _id})
+  },
+
   renderMessageView: function() {
     if (this.state.error != null) {
       return (
@@ -239,6 +243,7 @@ var Organization = React.createClass({
         </button>
         <button type="button" className="btn btn-default"
           disabled={this.isCreating() || this.state.isEditing}
+          onClick={this._onAnalytics}
         >
           Analytics
         </button>

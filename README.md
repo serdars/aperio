@@ -29,7 +29,7 @@ Meaningful Engagement Platform.
 * ~~Select User to Invite~~
 * ~~Profile & Invites~~
 * ~~Accept / Decline Invites~~
-* Analytics & Invites
+* ~~Analytics & Invites~~
 * Invite a non-existing user
 * Select Group
 * Add Members to group

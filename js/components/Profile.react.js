@@ -36,47 +36,56 @@ var Profile = React.createClass({
 
   renderInvitations: function() {
     var invitationViews = [ ];
-    for(var i = 0; i < this.state.user.invitations.length; i++) {
-      var invitation = this.state.user.invitations[i];
-
-      var actionsView;
-      if (invitation.state == "accepted") {
-        actionsView = (
-          <div className="pull-right">
-            Accepted
-          </div>
-        );
-      } else if (invitation.state == "declined") {
-        actionsView = (
-          <div className="pull-right">
-            Declined
-          </div>
-        );
-      } else {
-        actionsView = (
-          <div className="btn-group btn-group-xs pull-right" role="invitations">
-            <button type="button" className="btn btn-default"
-              onClick={this._onAccept.bind(this, invitation.id)}
-            >
-              Accept
-            </button>
-            <button type="button" className="btn btn-default"
-              onClick={this._onDecline.bind(this, invitation.id)}
-            >
-              Decline
-            </button>
-          </div>
-        );
-      }
-
-
+    if (this.state.user.invitations.length == 0) {
       invitationViews.push(
         <li className="list-group-item">
-          {invitation.inviter.name} invited you to {invitation.organization.name} organization.
-          {actionsView}
+          There are no invitations for you.
         </li>
       );
+    } else {
+      for(var i = 0; i < this.state.user.invitations.length; i++) {
+        var invitation = this.state.user.invitations[i];
+
+        var actionsView;
+        if (invitation.state == "accepted") {
+          actionsView = (
+            <div className="pull-right">
+              Accepted
+            </div>
+          );
+        } else if (invitation.state == "declined") {
+          actionsView = (
+            <div className="pull-right">
+              Declined
+            </div>
+          );
+        } else {
+          actionsView = (
+            <div className="btn-group btn-group-xs pull-right" role="invitations">
+              <button type="button" className="btn btn-default"
+                onClick={this._onAccept.bind(this, invitation.id)}
+              >
+                Accept
+              </button>
+              <button type="button" className="btn btn-default"
+                onClick={this._onDecline.bind(this, invitation.id)}
+              >
+                Decline
+              </button>
+            </div>
+          );
+        }
+
+
+        invitationViews.push(
+          <li className="list-group-item">
+            {invitation.inviter.name} invited you to {invitation.organization.name} organization.
+            {actionsView}
+          </li>
+        );
+      }
     }
+
     return (
       <div className="panel panel-primary">
         <div className="panel-heading">Invitations</div>
