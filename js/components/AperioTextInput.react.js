@@ -8,7 +8,8 @@ var AperioTextInput = React.createClass({
     id: ReactPropTypes.string,
     placeholder: ReactPropTypes.string,
     value: ReactPropTypes.string,
-    type: ReactPropTypes.string
+    type: ReactPropTypes.string,
+    onChange: ReactPropTypes.func
   },
 
   getInitialState: function() {
@@ -40,6 +41,10 @@ var AperioTextInput = React.createClass({
     this.setState({
       value: event.target.value
     });
+
+    if (this.props.onChange) {
+      this.props.onChange(event.target.value);
+    }
   },
 
   _onKeyDown: function(event) {

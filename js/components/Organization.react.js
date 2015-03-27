@@ -10,6 +10,7 @@ var UserActions = require('../actions/UserActionCreators')
 var AperioTextInput = require('./AperioTextInput.react');
 var Group = require('./Group.react');
 var TimelineItems = require('./TimelineItems.react');
+var InviteForm = require('./InviteForm.react');
 
 _id = null;
 
@@ -64,7 +65,6 @@ var Organization = React.createClass({
     OrganizationStore.removeChangeListener(this._onChange);
     ErrorStore.removeChangeListener(this._onError);
   },
-
 
   _onChange: function() {
     var org = OrganizationStore.get();
@@ -146,20 +146,7 @@ var Organization = React.createClass({
 
   renderOrgJoinForm: function() {
     return (
-      <div className="form-inline pull-right">
-        <div className="form-group invitation-form-field">
-          <AperioTextInput
-            type="text" className="form-control"
-            id="name" placeholder="Invite Someone"
-            ref="invitee"
-          />
-          <button type="button" className="btn btn-primary"
-            onClick={this._onInvite}
-          >
-            Invite
-          </button>
-        </div>
-      </div>
+      <InviteForm orgId={_id}/>
     );
   },
 
@@ -172,7 +159,6 @@ var Organization = React.createClass({
     } else {
       viewDisplay.push(this.renderOrgDisplayView());
       viewDisplay.push(this.renderActions());
-      viewDisplay.push(this.renderOrgJoinForm());
     }
 
     return (
@@ -296,6 +282,7 @@ var Organization = React.createClass({
 
     viewElements.push(this.renderMessageView());
     viewElements.push(this.renderOrgInfoView());
+    viewElements.push(this.renderOrgJoinForm());
     viewElements.push(this.renderOrgMainView());
 
     return (

@@ -84,6 +84,50 @@ var UserActionCreators = {
         }
       });
   },
+
+  search: function(query) {
+    request
+      .get("http://localhost:3000/v1/search?query=" + query )
+      .withCredentials()
+      .end(function(error, response) {
+        if (response.ok) {
+          AperioDispatcher.dispatch({
+            type: ActionTypes.USER_SEARCH_RESPONSE,
+            suggestions: response.body.suggestions
+          });
+        }
+        else {
+          AperioDispatcher.dispatch({
+            type: ActionTypes.API_ERROR,
+            key: "user_search",
+            error: response.body.message
+          });
+        }
+      });
+  },
+
+  invite: function(data) {
+    request
+      .post('http://localhost:3000/v1/invitations')
+      .send({
+        invitation: data
+      })
+      .withCredentials()
+      .end(function(error, response) {
+        if (response.ok) {
+          AperioDispatcher.dispatch({
+            type: ActionTypes.USER_INVITED,
+            invitation: response.body
+          });
+        } else {
+          AperioDispatcher.dispatch({
+            type: ActionTypes.API_ERROR,
+            key: "user_invite",
+            error: response.body.message
+          });
+        }
+      });
+  }
 };
 
 module.exports = UserActionCreators;

@@ -15,6 +15,8 @@ module.exports = {
     GROUP_UPDATE:         null,
     GROUP_JOIN:           null,
     INVITATION_CREATE:    null,
+    USER_SEARCH_RESPONSE: null,
+    USER_INVITED:         null 
   }),
 
   Old: keyMirror({
