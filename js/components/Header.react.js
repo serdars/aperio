@@ -52,8 +52,14 @@ var Header = React.createClass({
           </ul>
         </li>
       );
-      currentUserItems.push(<li> <a href="#"> {this.state.user.name} </a> </li>);
-      currentUserItems.push(<li> <a href="#" onClick={this._logout}> Logout </a> </li>);
+      currentUserItems.push(
+        <li>
+          <Link to="profile"> {this.state.user.name} </Link>
+        </li>
+      );
+      currentUserItems.push(
+        <li> <a href="#" onClick={this._logout}> Logout </a> </li>
+      );
     }
     else {
       currentUserItems.push(<li> <Link to="join"> Join / Login </Link> </li>);

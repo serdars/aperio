@@ -27,10 +27,10 @@ Meaningful Engagement Platform.
 * ~~Join Organization~~
 * ~~Invite to Organization~~
 * ~~Select User to Invite~~
-* Invite a non-existing user
-* Profile & Invites
-* Analytics & Invites
+* ~~Profile & Invites~~
 * Accept / Decline Invites
+* Analytics & Invites
+* Invite a non-existing user
 * Select Group
 * Add Members to group
 * Timeline

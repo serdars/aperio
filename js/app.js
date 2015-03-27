@@ -7,6 +7,7 @@ var RouteHandler = Router.RouteHandler;
 var Header = require('./components/Header.react');
 var Join = require('./components/Join.react');
 var Organization = require('./components/Organization.react');
+var Profile = require('./components/Profile.react');
 
 var AppActions = require('./actions/AppActionCreators');
 var UserStore = require('./stores/UserStore');
@@ -32,6 +33,7 @@ var routes = (
     <Route name="organization" path="organizations/:id"
       handler={Organization}
     />
+    <Route name="profile" handler={Profile}/>
   </Route>
 );
 
