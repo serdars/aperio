@@ -7,8 +7,9 @@ var RouteHandler = Router.RouteHandler;
 var Header = require('./components/Header.react');
 var Join = require('./components/Join.react');
 var Organization = require('./components/Organization.react');
-var Analytics = require('./components/Analytics.react');
 var Profile = require('./components/Profile.react');
+var OrgInvites = require('./components/OrgInvites.react');
+var OrgTimeline = require('./components/OrgTimeline.react');
 
 var AppActions = require('./actions/AppActionCreators');
 var UserStore = require('./stores/UserStore');
@@ -19,7 +20,7 @@ var App = React.createClass({
       <div>
         <Header />
         <div className="container-fluid">
-          <RouteHandler/>
+          <RouteHandler />
         </div>
       </div>
     );
@@ -31,12 +32,13 @@ var App = React.createClass({
 var routes = (
   <Route name="app" path="/" handler={App}>
     <Route name="join" handler={Join}/>
-    <Route name="organization" path="organizations/:id"
-      handler={Organization}
-    />
-    <Route name="analytics" path="organizations/:id/analytics"
-      handler={Analytics}
-    />
+    <Route name="organization" path="organizations/:id" handler={Organization}>
+      <Route name="timeline" handler={OrgTimeline} />
+      <Route name="conversations" handler={OrgTimeline} />
+      <Route name="members" handler={OrgTimeline} />
+      <Route name="invites" handler={OrgInvites} />
+      <DefaultRoute handler={OrgTimeline}/>
+    </Route>
     <Route name="profile" handler={Profile}/>
   </Route>
 );

@@ -88,7 +88,9 @@ var Profile = React.createClass({
 
     return (
       <div className="panel panel-primary">
-        <div className="panel-heading">Invitations</div>
+        <div className="panel-heading">
+          Invitations for you ({this.state.user.name} - {this.state.user.email})
+        </div>
         <ul className="list-group">
           {invitationViews}
         </ul>
@@ -99,13 +101,7 @@ var Profile = React.createClass({
   render: function() {
     return (
       <div className="row">
-        <div className="col-sm-offset-3 col-sm-6">
-          <h2>
-            {this.state.user.name}
-            <small>
-              {this.state.user.email}
-            </small>
-          </h2>
+        <div className="col-sm-offset-2 col-sm-8">
           {this.renderInvitations()}
         </div>
       </div>

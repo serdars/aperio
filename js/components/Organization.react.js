@@ -1,15 +1,15 @@
 var React = require('react');
 var cx = require('react/lib/cx');
-var Navigation = require('react-router').Navigation;
+var Router = require('react-router');
+var Navigation = Router.Navigation;
+var RouteHandler = Router.RouteHandler;
 
 var OrganizationStore = require('../stores/OrganizationStore');
 var ErrorStore = require('../stores/ErrorStore');
 var OrganizationActions = require('../actions/OrganizationActionCreators')
-var UserActions = require('../actions/UserActionCreators')
 
 var AperioTextInput = require('./AperioTextInput.react');
 var Group = require('./Group.react');
-var TimelineItems = require('./TimelineItems.react');
 var InviteForm = require('./InviteForm.react');
 
 _id = null;
@@ -22,12 +22,13 @@ var Organization = React.createClass({
       _id = params.id;
       if (_id != "new") {
         OrganizationActions.get(_id);
-        UserActions.timeline();
+      } else {
+        OrganizationStore.reset();
       }
     },
 
     willTransitionFrom: function (transition, component) {
-      OrganizationStore.reset();
+
     }
   },
 
@@ -37,6 +38,10 @@ var Organization = React.createClass({
 
   isMember: function() {
     return this.state.organization.is_member;
+  },
+
+  isAdmin: function() {
+    return this.state.organization.is_admin;
   },
 
   getInitialState: function() {
@@ -53,6 +58,7 @@ var Organization = React.createClass({
     return {
       isEditing: false,
       organization: organization,
+      messages: [ ]
     };
   },
 
@@ -82,11 +88,13 @@ var Organization = React.createClass({
 
   _onError: function() {
     this.setState({
-      error: ErrorStore.getError("organization")
+      messages: [ ErrorStore.getError("organization") ]
     });
   },
 
-  _onManage: function() {
+  _onEdit: function(event) {
+    event.preventDefault();
+
     if (this.isCreating()) {
       OrganizationActions.create({
         name: this.refs.name.getDOMNode().value.trim(),
@@ -104,7 +112,8 @@ var Organization = React.createClass({
     }
   },
 
-  _onJoin: function() {
+  _onJoin: function(event) {
+    event.preventDefault();
     OrganizationActions.joinOrganization({
       organization_id: _id
     });
@@ -117,57 +126,84 @@ var Organization = React.createClass({
     });
   },
 
-  _onAnalytics: function() {
-    this.transitionTo("analytics", {id: _id})
+  _onInviteComplete: function() {
+    this.setState({
+      messages: [ "Your invitation is successfully sent!" ]
+    });
   },
 
-  renderMessageView: function() {
-    if (this.state.error != null) {
-      return (
-        <div className="panel panel-default">
-          <div className="panel-body">
-            {message}
-          </div>
+  renderOrgView: function() {
+    var displayItems = [ ];
+
+    if (this.isMember()) {
+      displayItems.push(
+        <div className="org-view-item  pull-left">
+          <i className="fa fa-check-square-o"></i>
         </div>
       );
     } else {
-      return (<div />);
+      displayItems.push(
+        <div className="org-view-item org-view-action pull-left">
+          <a href="#" onClick={this._onJoin}>
+            <i className="fa fa-sign-in"></i>
+          </a>
+        </div>
+      );
     }
-  },
 
-  renderOrgDisplayView: function() {
-    return (
-      <div className="organization-info pull-left">
-        <h2>
-          {this.state.organization.name}
-          <small>
-            {this.state.organization.motto }
-          </small>
-        </h2>
+    displayItems.push(
+      <div className="org-view-item pull-left">
+        {this.state.organization.name}
       </div>
     );
-  },
 
-  renderOrgJoinForm: function() {
-    return (
-      <InviteForm orgId={_id}/>
+    displayItems.push(
+      <div className="org-view-item pull-left">
+        <small> {this.state.organization.motto} </small>
+      </div>
     );
-  },
 
-  renderOrgInfoView: function() {
-    var viewDisplay = [ ];
+    if (this.isAdmin()) {
+      displayItems.push(
+        <div className="org-view-item org-view-action pull-right">
+          <a href="#" onClick={this._onEdit}>
+            <i className="fa fa-edit"></i>
+          </a>
+        </div>
+      );
 
-    if (this.state.isEditing || this.isCreating()) {
-      viewDisplay.push(this.renderOrgFormView());
-      viewDisplay.push(this.renderActions());
-    } else {
-      viewDisplay.push(this.renderOrgDisplayView());
-      viewDisplay.push(this.renderActions());
+      displayItems.push(
+        <div className="org-view-item org-view-action pull-right">
+          <InviteForm orgId={_id} onInviteComplete={this._onInviteComplete}/>
+        </div>
+      );
     }
 
+    displayItems.push(<div className="clearfix" />);
+
+    return (<div className="org-view-bar">{displayItems}</div>);
+  },
+
+  renderOrgFormView: function() {
     return (
-      <div className="row">
-        {viewDisplay}
+      <div className="form-inline pull-left">
+        <div className="form-group organization-form-field">
+          <AperioTextInput
+            type="text" className="form-control"
+            id="name" placeholder="Organization Name"
+            ref="name" value={this.state.organization.name}
+          />
+        </div>
+        <div className="form-group organization-form-field">
+          <AperioTextInput
+            type="motto" className="form-control"
+            id="motto" placeholder="Motto"
+            ref="motto" value={this.state.organization.motto}
+          />
+        </div>
+        <button type="button" className="btn btn-info" onClick={this._onEdit}>
+          Done
+        </button>
       </div>
     );
   },
@@ -198,105 +234,59 @@ var Organization = React.createClass({
     );
   },
 
-  renderOrgFormView: function() {
-    return (
-      <div className="form-inline pull-left">
-        <div className="form-group organization-form-field">
-          <AperioTextInput
-            type="text" className="form-control"
-            id="name" placeholder="Organization Name"
-            ref="name" value={this.state.organization.name}
-          />
-        </div>
-        <div className="form-group organization-form-field">
-          <AperioTextInput
-            type="motto" className="form-control"
-            id="motto" placeholder="Motto"
-            ref="motto" value={this.state.organization.motto}
-          />
-        </div>
-      </div>
-    );
-  },
-
-  renderActions: function() {
-    var manageButtonText;
-    if (this.state.isEditing) {
-      manageButtonText = "Done";
-    } else if (this.isCreating()) {
-      manageButtonText = "Create";
-    } else {
-      manageButtonText = "Manage";
-    }
-
-    var joinButtonText = "Join";
-    if (this.isMember()) {
-      joinButtonText = "Member";
-    } else {
-      joinButtonText = "Join";
-    }
-
-    return (
-      <div className="btn-group pull-right" role="group">
-        <button type="button" className="btn btn-default" onClick={this._onManage}>
-          {manageButtonText}
-        </button>
-        <button type="button" className="btn btn-default"
-          disabled={this.isCreating() || this.state.isEditing}
-          onClick={this._onAnalytics}
-        >
-          Analytics
-        </button>
-        <button type="button" className={cx({
-          "btn": true,
-          "btn-default": this.isMember(),
-          "btn-info": !this.isMember()
-        })} disabled={this.isCreating() || this.state.isEditing || this.isMember()}
-          onClick={this._onJoin}
-        >
-          {joinButtonText}
-        </button>
-      </div>
-    )
-  },
-
-  renderOrgMainView: function() {
-    if (!this.isCreating()) {
-      return (
-        <div className="row">
-          <div className="col-sm-8">
-            <TimelineItems />
-          </div>
-          <div className="col-sm-4">
-            {this.renderOrgGroupView()}
+  renderMessages: function() {
+    var messages = [ ];
+    for(var i = 0; i < this.state.messages.length; i++){
+      messages.push(
+        <div className="panel panel-default">
+          <div className="panel-body">
+            {this.state.messages[i]}
           </div>
         </div>
       );
-    } else {
-      return (<div />);
     }
 
+    return (<div>{messages}</div>);
   },
 
   render: function() {
-    var viewElements = [ ];
-
     if (this.state.organization == null) {
       return (<div />);
     }
 
-    viewElements.push(this.renderMessageView());
-    viewElements.push(this.renderOrgInfoView());
-    viewElements.push(this.renderOrgJoinForm());
-    viewElements.push(this.renderOrgMainView());
-
-    return (
-      <div className="row">
-        <div className="col-sm-offset-1 col-sm-10">
-          {viewElements}
+    if (this.state.isEditing || this.isCreating()) {
+      return (
+        <div className="row">
+          <div className="col-sm-offset-1 col-sm-10">
+            <div className="row">
+              {this.renderOrgFormView()}
+            </div>
+            <div className="row">
+              {this.renderMessages()}
+            </div>
+          </div>
         </div>
-      </div>
-    );
+      );
+    } else {
+      return (
+        <div className="row">
+          <div className="col-sm-offset-1 col-sm-10">
+            <div className="row">
+              {this.renderOrgView()}
+            </div>
+            <div className="row">
+              <div className="col-sm-8">
+                {this.renderMessages()}
+                <RouteHandler />
+              </div>
+              <div className="col-sm-4">
+                {this.renderOrgGroupView()}
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    }
   },
 
 });

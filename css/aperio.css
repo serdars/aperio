@@ -14,8 +14,32 @@ body {
   position: absolute;
   z-index: 1000;
   width: 250px;
+  font-size: 14px;
+  font-weight: 400;
 }
 
 .invite-input {
   width: 250px !important;
+}
+
+.org-view-bar {
+  font-size: 30px;
+  margin-top: 0px;
+  margin-bottom: 20px;
+  font-weight: 500;
+  line-height: 1.1;
+}
+
+.org-view-bar small {
+  font-size: 65%;
+  font-weight: 400;
+  color: #777
+}
+
+.org-view-item {
+  padding: 0 5px;
+}
+
+.organization-main-view {
+  margin-top: 10px;
 }

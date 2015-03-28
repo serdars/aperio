@@ -1,5 +1,6 @@
 var React = require('react');
 var ReactPropTypes = React.PropTypes;
+var cx = require('react/lib/cx');
 
 var UserActions = require('../actions/UserActionCreators')
 var InvitationStore = require('../stores/InvitationStore');
@@ -7,7 +8,7 @@ var InvitationStore = require('../stores/InvitationStore');
 var InviteForm = React.createClass({
   propTypes: {
     orgId: ReactPropTypes.string.isRequired,
-    onInvite: ReactPropTypes.func //Not sure if necessary
+    onInviteComplete: ReactPropTypes.func
   },
 
   getInitialState: function() {
@@ -16,8 +17,7 @@ var InviteForm = React.createClass({
     return {
       query: "",
       suggestions: [ ],
-      isLoading: false,
-      showMessage: false
+      isLoading: false
     };
   },
 
@@ -33,16 +33,18 @@ var InviteForm = React.createClass({
     if (InvitationStore.getInvitation() == null) {
       this.setState({
         isLoading: false,
-        suggestions: InvitationStore.getSuggestions(),
-        showMessage: false
+        suggestions: InvitationStore.getSuggestions()
       });
     } else {
+      if (this.props.onInviteComplete != null) {
+        this.props.onInviteComplete();
+      }
+
       this.setState({
         query: "",
         isLoading: false,
-        suggestions: [ ],
-        showMessage: true
-      })
+        suggestions: [ ]
+      });
     }
   },
 
@@ -64,39 +66,13 @@ var InviteForm = React.createClass({
 
       this.setState({
         query: query,
-        isLoading: true,
-        showMessage: false
+        isLoading: true
       });
     } else {
       this.setState({
         query: query,
-        suggestions: [ ],
-        showMessage: false
+        suggestions: [ ]
       });
-    }
-  },
-
-  renderMessage: function() {
-    if (this.state.showMessage) {
-      return (
-        <div className="alert alert-info alert-dismissible pull-left">
-          Your invitation is successfully sent!
-        </div>
-      );
-    } else {
-      return (<div />);
-    }
-  },
-
-  renderLoading: function() {
-    if (this.state.isLoading) {
-      return (
-        <div className="pull-left">
-          Loading...
-        </div>
-      );
-    } else {
-      return (<div />);
     }
   },
 
@@ -115,8 +91,14 @@ var InviteForm = React.createClass({
     }
 
   	return (
-      <div className="form-inline">
-        <div className="form-group pull-left">
+      <div>
+        <div className={cx({
+          "pull-left": true,
+          "invisible": !this.state.isLoading
+        })}>
+          <i className="fa fa-spinner fa-spin"></i>
+        </div>
+        <div className="pull-left">
           <input
             type="text" className="form-control invite-input"
             id="invitee" placeholder="Invite Someone"
@@ -127,8 +109,6 @@ var InviteForm = React.createClass({
             {suggestionViews}
           </div>
         </div>
-        {this.renderLoading()}
-        {this.renderMessage()}
         <div className="clearfix" />
       </div>
     );

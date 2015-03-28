@@ -1,21 +1,18 @@
 var React = require('react');
 var ReactPropTypes = React.PropTypes;
-var Navigation = require('react-router').Navigation;
 
 var OrganizationStore = require('../stores/OrganizationStore');
 var OrganizationActions = require('../actions/OrganizationActionCreators')
 
+var OrgTabsMixin = require('../mixins/OrgTabsMixin');
+var Router = require('react-router');
+var Navigation = Router.Navigation;
+var Link = require('react-router').Link;
+
 var _orgId = null;
 
-var Analytics = React.createClass({
-  mixins: [Navigation],
-
-  statics: {
-    willTransitionTo: function(transition, params) {
-      _orgId = params.id;
-      OrganizationActions.get(_orgId);
-    }
-  },
+var OrgInvites = React.createClass({
+  mixins: [Navigation, OrgTabsMixin],
 
   getInitialState: function() {
     return {
@@ -67,8 +64,7 @@ var Analytics = React.createClass({
     }
 
     return (
-      <div className="panel panel-primary">
-        <div className="panel-heading">Invitations</div>
+      <div className="panel panel-default">
         <ul className="list-group">
           {invitationViews}
         </ul>
@@ -77,13 +73,10 @@ var Analytics = React.createClass({
   },
 
   render: function() {
-    if (this.state.organization == null) {
-      return (<div />);
-    }
-
     return (
       <div className="row">
-        <div className="col-sm-offset-3 col-sm-6">
+        {this.renderTabs()}
+        <div className="organization-main-view">
           {this.renderInvitations()}
         </div>
       </div>
@@ -91,4 +84,4 @@ var Analytics = React.createClass({
   },
 });
 
-module.exports = Analytics;
+module.exports = OrgInvites;
