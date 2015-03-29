@@ -13,13 +13,18 @@ body {
 .invite-results {
   position: absolute;
   z-index: 1000;
-  width: 250px;
+  width: 100%;
   font-size: 14px;
   font-weight: 400;
 }
 
-.invite-input {
-  width: 250px !important;
+.org-invite-suggestion {
+  width: 300px;
+  position: relative;
+}
+
+.group-invite-suggestion {
+  position: relative;
 }
 
 .org-view-bar {
@@ -65,5 +70,11 @@ body {
 }
 
 .aperio-checkbox {
-  
+
+}
+
+.suggestion-loading {
+  font-size: 24px;
+  position: absolute;
+  right: 10px;
 }

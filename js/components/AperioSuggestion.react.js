@@ -3,57 +3,50 @@ var ReactPropTypes = React.PropTypes;
 var cx = require('react/lib/cx');
 
 var UserActions = require('../actions/UserActionCreators')
-var InvitationStore = require('../stores/InvitationStore');
+var SuggestionStore = require('../stores/SuggestionStore');
 
-var InviteForm = React.createClass({
+var AperioSuggestion = React.createClass({
   propTypes: {
-    orgId: ReactPropTypes.string.isRequired,
-    onInviteComplete: ReactPropTypes.func
+    placeholder: ReactPropTypes.string.isRequired,
+    onSelect: ReactPropTypes.func.isRequired
   },
 
   getInitialState: function() {
-    InvitationStore.reset();
+    SuggestionStore.reset();
 
     return {
       query: "",
       suggestions: [ ],
-      isLoading: false
+      isLoading: false,
+      isActive: false
     };
   },
 
   componentDidMount: function() {
-    InvitationStore.addChangeListener(this._onChange);
+    SuggestionStore.addChangeListener(this._onChange);
   },
 
   componentWillUnmount: function() {
-    InvitationStore.removeChangeListener(this._onChange);
+    SuggestionStore.removeChangeListener(this._onChange);
   },
 
   _onChange: function(event) {
-    if (InvitationStore.getInvitation() == null) {
+    if (this.state.active) {
       this.setState({
         isLoading: false,
-        suggestions: InvitationStore.getSuggestions()
-      });
-    } else {
-      if (this.props.onInviteComplete != null) {
-        this.props.onInviteComplete();
-      }
-
-      this.setState({
-        query: "",
-        isLoading: false,
-        suggestions: [ ]
+        suggestions: SuggestionStore.getSuggestions()
       });
     }
   },
 
-  _onSelect: function(user_id, event) {
+  _onSelect: function(suggestion, event) {
     event.preventDefault();
 
-    UserActions.invite({
-      invitee_id: user_id,
-      organization_id: this.props.orgId
+    this.props.onSelect(suggestion);
+    this.setState({
+      isLoading: false,
+      suggestions: [ ],
+      query: ""
     });
   },
 
@@ -76,6 +69,18 @@ var InviteForm = React.createClass({
     }
   },
 
+  _onFocus: function() {
+    this.setState({
+      active: true
+    });
+  },
+
+  _onBlur: function(event) {
+    this.setState({
+      active: false
+    });
+  },
+
   render: function() {
     var suggestionViews = [ ];
 
@@ -84,7 +89,7 @@ var InviteForm = React.createClass({
 
       suggestionViews.push(
         <a href="#" className="list-group-item"
-          onClick={this._onSelect.bind(this, suggestion.id)}>
+          onClick={this._onSelect.bind(this, suggestion)}>
           {suggestion.name} / {suggestion.email}
         </a>
       );
@@ -93,27 +98,25 @@ var InviteForm = React.createClass({
   	return (
       <div>
         <div className={cx({
-          "pull-left": true,
+          "suggestion-loading": true,
           "invisible": !this.state.isLoading
         })}>
           <i className="fa fa-spinner fa-spin"></i>
         </div>
-        <div className="pull-left">
-          <input
-            type="text" className="form-control invite-input"
-            id="invitee" placeholder="Invite Someone"
-            ref="invitee" onChange={this._onInput}
-            value={this.state.query}
-          />
-          <div className="list-group invite-results">
-            {suggestionViews}
-          </div>
+        <input
+          type="text" className="form-control"
+          id="invitee" placeholder={this.props.placeholder}
+          ref="invitee" onChange={this._onInput}
+          value={this.state.query} onFocus={this._onFocus}
+          onBlur={this._onBlur}
+        />
+        <div className="list-group invite-results">
+          {suggestionViews}
         </div>
-        <div className="clearfix" />
       </div>
     );
   },
 
 });
 
-module.exports = InviteForm;
+module.exports = AperioSuggestion;

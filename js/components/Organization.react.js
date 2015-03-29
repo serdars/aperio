@@ -10,7 +10,7 @@ var OrganizationActions = require('../actions/OrganizationActionCreators')
 
 var AperioTextInput = require('./AperioTextInput.react');
 var Group = require('./Group.react');
-var InviteForm = require('./InviteForm.react');
+var AperioSuggestion = require('./AperioSuggestion.react');
 
 _id = null;
 
@@ -116,14 +116,15 @@ var Organization = React.createClass({
     });
   },
 
-  _onInvite: function() {
+  _invite: function(user) {
     OrganizationActions.invite({
       organization_id: _id,
-      invitee_id: this.refs.invitee.getDOMNode().value.trim()
+      invitee_id: user.id
     });
   },
 
   _onInviteComplete: function() {
+    // TODO
     this.setState({
       messages: [ "Your invitation is successfully sent!" ]
     });
@@ -164,14 +165,16 @@ var Organization = React.createClass({
       displayItems.push(
         <div className="horizontal-spacing pull-right">
           <a href="#" onClick={this._onEdit}>
-            <i className="fa fa-edit"></i>
+            <i className="fa fa-gear"></i>
           </a>
         </div>
       );
 
       displayItems.push(
-        <div className="horizontal-spacing  pull-right">
-          <InviteForm orgId={_id} onInviteComplete={this._onInviteComplete}/>
+        <div className="horizontal-spacing pull-right org-invite-suggestion">
+          <AperioSuggestion placeholder="Invite a user"
+            onSelect={this._invite}
+          />
         </div>
       );
     }
@@ -226,12 +229,9 @@ var Organization = React.createClass({
     }} />);
 
     return (
-      <div className="panel panel-primary">
-        <div className="panel-heading"> Groups </div>
-        <ul className="list-group">
-          {viewListItems}
-        </ul>
-      </div>
+      <ul className="list-group">
+        {viewListItems}
+      </ul>
     );
   },
 

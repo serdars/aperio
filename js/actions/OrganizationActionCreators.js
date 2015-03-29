@@ -210,7 +210,6 @@ var OrganizationActionCreators = {
         }
       });
   },
-
 };
 
 module.exports = OrganizationActionCreators;

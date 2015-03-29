@@ -8,7 +8,7 @@ var CHANGE_EVENT = 'change';
 var _suggestions = [ ];
 var _invitation = null;
 
-var InvitationStore = assign({}, EventEmitter.prototype, {
+var SuggestionStore = assign({}, EventEmitter.prototype, {
   // Accessor methods
   getSuggestions: function() {
     return _suggestions;
@@ -45,19 +45,19 @@ AperioDispatcher.register(function(action) {
     case ActionTypes.USER_SEARCH_RESPONSE:
       _invitation = null;
       _suggestions = action.suggestions;
-      InvitationStore.emitChange();
+      SuggestionStore.emitChange();
       break;
 
     case ActionTypes.USER_INVITED:
       _suggestions = [ ];
       _invitation = action.invitation;
-      InvitationStore.emitChange();
+      SuggestionStore.emitChange();
 
     default:
       // no op
   }
 });
 
-InvitationStore.setMaxListeners(20);
+SuggestionStore.setMaxListeners(20);
 
-module.exports = InvitationStore;
+module.exports = SuggestionStore;

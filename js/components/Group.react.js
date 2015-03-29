@@ -7,6 +7,7 @@ var OrganizationActions = require('../actions/OrganizationActionCreators')
 var OrganizationStore = require('../stores/OrganizationStore');
 var AperioTextInput = require('./AperioTextInput.react');
 var AperioCheckbox = require('./AperioCheckbox.react');
+var AperioSuggestion = require('./AperioSuggestion.react');
 
 var Group = React.createClass({
   propTypes: {
@@ -79,6 +80,13 @@ var Group = React.createClass({
     }
   },
 
+  _addMember: function(user) {
+    OrganizationActions.joinGroup({
+      group_id: this.props.group.id,
+      user_id: user.id
+    });
+  },
+
   isMember: function() {
     return this.state.group.is_member;
   },
@@ -110,6 +118,11 @@ var Group = React.createClass({
             type="motto" className="form-control"
             id="motto" placeholder="Motto"
             ref="motto" value={this.state.group.motto}
+          />
+        </div>
+        <div className="form-group group-invite-suggestion">
+          <AperioSuggestion placeholder="Add a member"
+            onSelect={this._addMember}
           />
         </div>
         <div className="form-group pull-left">
@@ -155,7 +168,7 @@ var Group = React.createClass({
       viewElements.push(
         <div className="horizontal-spacing pull-right">
           <a href="#" onClick={this._onEdit}>
-            <i className="fa fa-edit"></i>
+            <i className="fa fa-gear"></i>
           </a>
         </div>
       );
