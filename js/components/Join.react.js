@@ -1,5 +1,7 @@
 var React = require('react');
 var cx = require('react/lib/cx');
+var Router = require('react-router');
+var Navigation = Router.Navigation;
 
 var UserStore = require('../stores/UserStore');
 var ErrorStore = require('../stores/ErrorStore');
@@ -9,6 +11,8 @@ var RegisterForm = require('./RegisterForm.react');
 var LoginForm = require('./LoginForm.react');
 
 var Join = React.createClass({
+  mixins: [Navigation],
+
   getInitialState: function() {
     return {
       active: "register",
@@ -34,10 +38,7 @@ var Join = React.createClass({
   },
 
   _onUserChange: function() {
-    this.setState({
-      error: null,
-      user: UserStore.getUser()
-    });
+    this.transitionTo("home")
   },
 
   _onSubmit: function(data) {

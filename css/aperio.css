@@ -43,3 +43,13 @@ body {
 .organization-main-view {
   margin-top: 10px;
 }
+
+.timeline-loading {
+  font-size: 200px;
+  text-align: center;
+  color: #AAA;
+}
+
+.list-group-action {
+  text-align: center;
+}

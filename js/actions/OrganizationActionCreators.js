@@ -189,6 +189,28 @@ var OrganizationActionCreators = {
         }
       });
   },
+
+  timeline: function(id) {
+    request
+      .get("http://localhost:3000/v1/organizations/" + id + "/timeline")
+      .withCredentials()
+      .end(function(error, response) {
+        if (response.ok) {
+          AperioDispatcher.dispatch({
+            type: ActionTypes.ORG_TIMELINE_UPDATE,
+            timeline: response.body.timeline
+          });
+        }
+        else {
+          AperioDispatcher.dispatch({
+            type: ActionTypes.API_ERROR,
+            key: "org_timeline",
+            error: response.body.message
+          });
+        }
+      });
+  },
+
 };
 
 module.exports = OrganizationActionCreators;

@@ -32,7 +32,7 @@ function getItemLink(itemData) {
 var TimelineItems = React.createClass({
   getInitialState: function() {
     return {
-      timeline: null
+      timeline: TimelineStore.get()
     };
   },
 
@@ -56,17 +56,15 @@ var TimelineItems = React.createClass({
 
     if (timeline == null) {
       entries.push(
-        <div className="panel panel-default">
-          <div className="panel-body">
-            "Updating timeline!"
-          </div>
+        <div className="row timeline-loading">
+          <i className="fa fa-spinner fa-spin"></i>
         </div>
       );
     }
 
     for(var key in timeline) {
       var entry = timeline[key];
-      var entryElements = [ getItemLink(entry.subject), getActionText(entry.action_type) ];
+      var entryElements = [ entry.subject.name, getActionText(entry.action_type) ];
 
       if (entry.target != null) {
         entryElements.push(getItemLink(entry.target));

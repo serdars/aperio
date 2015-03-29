@@ -82,7 +82,7 @@ var Header = React.createClass({
                 </div>
               </form>
             </li>
-            <li> <a href="#/timeline"> Timeline </a> </li>
+            <li> <Link to="home"> Home </Link> </li>
           </ul>
           <ul className="nav navbar-nav navbar-right"> {currentUserItems} </ul>
         </div>

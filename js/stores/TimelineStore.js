@@ -31,6 +31,7 @@ var TimelineStore = assign({}, EventEmitter.prototype, {
 AperioDispatcher.register(function(action) {
   switch(action.type) {
     case ActionTypes.TIMELINE_UPDATE:
+    case ActionTypes.ORG_TIMELINE_UPDATE:
       _items = action.timeline;
       TimelineStore.emitChange();
       break;

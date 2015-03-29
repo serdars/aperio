@@ -22,13 +22,10 @@ var Organization = React.createClass({
       _id = params.id;
       if (_id != "new") {
         OrganizationActions.get(_id);
+        OrganizationActions.timeline(_id);
       } else {
         OrganizationStore.reset();
       }
-    },
-
-    willTransitionFrom: function (transition, component) {
-
     }
   },
 

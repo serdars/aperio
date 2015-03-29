@@ -19,7 +19,8 @@ module.exports = {
     USER_SEARCH_RESPONSE:     null,
     USER_INVITED:             null,
     USER_INVITATION_ACCEPTED: null,
-    USER_INVITATION_DECLINED: null
+    USER_INVITATION_DECLINED: null,
+    ORG_TIMELINE_UPDATE:      null
   }),
 
   Old: keyMirror({
