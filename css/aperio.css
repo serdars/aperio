@@ -36,7 +36,7 @@ body {
   color: #777
 }
 
-.org-view-item {
+.horizontal-spacing {
   padding: 0 5px;
 }
 
@@ -52,4 +52,18 @@ body {
 
 .list-group-action {
   text-align: center;
+}
+
+.group-view-bar-header {
+  font-size: 16px;
+}
+
+.group-view-bar-body {
+  color: #777;
+  font-weight: 200;
+  font-size: 12px;
+}
+
+.aperio-checkbox {
+  
 }

@@ -134,35 +134,35 @@ var Organization = React.createClass({
 
     if (this.isMember()) {
       displayItems.push(
-        <div className="org-view-item  pull-left">
-          <i className="fa fa-check-square-o"></i>
+        <div className="horizontal-spacing pull-left">
+          <i className="fa fa-user"></i>
         </div>
       );
     } else {
       displayItems.push(
-        <div className="org-view-item org-view-action pull-left">
+        <div className="horizontal-spacing pull-left">
           <a href="#" onClick={this._onJoin}>
-            <i className="fa fa-sign-in"></i>
+            <i className="fa fa-user-plus"></i>
           </a>
         </div>
       );
     }
 
     displayItems.push(
-      <div className="org-view-item pull-left">
+      <div className="horizontal-spacing pull-left">
         {this.state.organization.name}
       </div>
     );
 
     displayItems.push(
-      <div className="org-view-item pull-left">
+      <div className="horizontal-spacing pull-left">
         <small> {this.state.organization.motto} </small>
       </div>
     );
 
     if (this.isAdmin()) {
       displayItems.push(
-        <div className="org-view-item org-view-action pull-right">
+        <div className="horizontal-spacing pull-right">
           <a href="#" onClick={this._onEdit}>
             <i className="fa fa-edit"></i>
           </a>
@@ -170,7 +170,7 @@ var Organization = React.createClass({
       );
 
       displayItems.push(
-        <div className="org-view-item org-view-action pull-right">
+        <div className="horizontal-spacing  pull-right">
           <InviteForm orgId={_id} onInviteComplete={this._onInviteComplete}/>
         </div>
       );
@@ -198,7 +198,7 @@ var Organization = React.createClass({
             ref="motto" value={this.state.organization.motto}
           />
         </div>
-        <button type="button" className="btn btn-info" onClick={this._onEdit}>
+        <button type="button" className="btn btn-primary" onClick={this._onEdit}>
           Done
         </button>
       </div>
@@ -214,20 +214,24 @@ var Organization = React.createClass({
 
     for (var key in groups) {
       viewListItems.push(
-        <Group orgId={_id} group={groups[key]} />
+        <Group org={this.state.organization} group={groups[key]} />
       );
     }
 
-    viewListItems.push(<Group orgId={_id} group={{
+    viewListItems.push(<Group org={this.state.organization} group={{
       id: null,
       name: "",
-      motto: ""
+      motto: "",
+      private: false
     }} />);
 
     return (
-      <ul className="list-group">
-        {viewListItems}
-      </ul>
+      <div className="panel panel-primary">
+        <div className="panel-heading"> Groups </div>
+        <ul className="list-group">
+          {viewListItems}
+        </ul>
+      </div>
     );
   },
 

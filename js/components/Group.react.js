@@ -6,11 +6,12 @@ var OrganizationActions = require('../actions/OrganizationActionCreators')
 
 var OrganizationStore = require('../stores/OrganizationStore');
 var AperioTextInput = require('./AperioTextInput.react');
+var AperioCheckbox = require('./AperioCheckbox.react');
 
 var Group = React.createClass({
   propTypes: {
     group: ReactPropTypes.object.isRequired,
-    orgId: ReactPropTypes.string.isRequired,
+    org: ReactPropTypes.object.isRequired,
   },
 
   getInitialState: function() {
@@ -34,7 +35,7 @@ var Group = React.createClass({
       this.setState({
         group: this.props.group,
         isEditing: false
-      })
+      });
     }
   },
 
@@ -44,25 +45,31 @@ var Group = React.createClass({
     });
   },
 
-  _onJoin: function() {
+  _onJoin: function(event) {
+    event.preventDefault();
+
     OrganizationActions.joinGroup({
       group_id: this.props.group.id
     });
   },
 
-  _onManage: function() {
+  _onEdit: function(event) {
+    event.preventDefault();
+
     if (this.state.isEditing) {
       if (this.props.group.id == null) {
         OrganizationActions.createGroup({
-          organization_id: this.props.orgId,
+          organization_id: this.props.org.id,
           name: this.refs.name.getDOMNode().value.trim(),
-          motto: this.refs.motto.getDOMNode().value.trim()
+          motto: this.refs.motto.getDOMNode().value.trim(),
+          private: this.refs.private.state.value
         });
       } else {
         OrganizationActions.updateGroup(this.props.group.id, {
-          organization_id: this.props.orgId,
+          organization_id: this.props.org.id,
           name: this.refs.name.getDOMNode().value.trim(),
-          motto: this.refs.motto.getDOMNode().value.trim()
+          motto: this.refs.motto.getDOMNode().value.trim(),
+          private: this.refs.private.state.value
         });
       }
     } else {
@@ -76,43 +83,10 @@ var Group = React.createClass({
     return this.state.group.is_member;
   },
 
-  renderActions: function() {
-    var manageButtonText;
-    if (this.state.isEditing) {
-      manageButtonText = "Done";
-    } else {
-      manageButtonText = "Manage";
-    }
-
-    var joinButtonText;
-    if (this.isMember()) {
-      joinButtonText = "Member";
-    } else {
-      joinButtonText = "Join";
-    }
-
-    return (
-      <div className="btn-group btn-group-xs pull-right" role="group">
-        <button type="button" className="btn btn-default" onClick={this._onManage}>
-          {manageButtonText}
-        </button>
-        <button type="button" className={cx({
-          "btn": true,
-          "btn-default": this.isMember(),
-          "btn-info": !this.isMember()
-        })} disabled={this.state.isEditing || this.isMember()}
-          onClick={this._onJoin}
-        >
-          {joinButtonText}
-        </button>
-      </div>
-    )
-  },
-
   renderCreateView: function() {
     return (
       <li className="list-group-item">
-        <button type="button" className="btn btn-info btn-block"
+        <button type="button" className="btn btn-primary btn-block"
           onClick={this._onCreate}
         >
           Create Group
@@ -138,7 +112,12 @@ var Group = React.createClass({
             ref="motto" value={this.state.group.motto}
           />
         </div>
-        {this.renderActions()}
+        <div className="form-group pull-left">
+          <AperioCheckbox value={this.state.group.private} placeholder="Private" ref="private"/>
+        </div>
+        <button type="button" className="btn btn-sm btn-primary pull-right" onClick={this._onEdit}>
+          Done
+        </button>
         <div className="clearfix" />
       </li>
     );
@@ -147,15 +126,51 @@ var Group = React.createClass({
 
 
   renderShowView: function() {
+    var privateText = this.state.group.private ? "Private" : "Public";
+    var viewElements = [ ];
+
+    if (this.isMember()) {
+      viewElements.push(
+        <div className="horizontal-spacing pull-left">
+          <i className="fa fa-user"></i>
+        </div>
+      );
+    } else {
+      viewElements.push(
+        <div className="horizontal-spacing pull-left">
+          <a href="#" onClick={this._onJoin}>
+            <i className="fa fa-user-plus"></i>
+          </a>
+        </div>
+      );
+    }
+
+    viewElements.push(
+      <div className="horizontal-spacing pull-left">
+        {this.state.group.name}
+      </div>
+    );
+
+    if (this.props.org.is_admin) {
+      viewElements.push(
+        <div className="horizontal-spacing pull-right">
+          <a href="#" onClick={this._onEdit}>
+            <i className="fa fa-edit"></i>
+          </a>
+        </div>
+      );
+    }
+
+    viewElements.push(<div className="clearfix" />);
+
     return (
       <li className="list-group-item">
-        {this.renderActions()}
-        <h5 className="list-group-item-heading">
-          {this.state.group.name}
-        </h5>
-        <h6 className="list-group-item-heading">
-          {this.state.group.motto}
-        </h6>
+        <div className="group-view-bar-header">
+          {viewElements}
+        </div>
+        <div className="group-view-bar-body">
+          {this.state.group.motto}, {privateText}, {this.state.group.member_count} members
+        </div>
       </li>
     );
 

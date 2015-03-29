@@ -80,11 +80,13 @@ var Home = React.createClass({
       }
 
       views.push(
-        <Link to="organization" params={{id: "new"}}
-          className="list-group-item list-group-item-info list-group-action"
-        >
-          Create Organization
-        </Link>
+        <div className="list-group-item">
+          <button type="button" className="btn btn-primary btn-block"
+            onClick={this._onCreateOrg}
+          >
+            Create Organization
+          </button>
+        </div>
       );
     }
 
