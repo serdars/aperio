@@ -5,6 +5,9 @@ Meaningful Engagement Platform.
 ## Backlog
 
 * Conversations
+  * Maybe comments?
+  * Timeline items interactable...
+  * 
 * User Access Checks:
   * Shouldn't see details.
   * "Need to join Aperio" on actions.

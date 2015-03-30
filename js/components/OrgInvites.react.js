@@ -9,8 +9,6 @@ var Router = require('react-router');
 var Navigation = Router.Navigation;
 var Link = require('react-router').Link;
 
-var _orgId = null;
-
 var OrgInvites = React.createClass({
   mixins: [Navigation, OrgTabsMixin],
 

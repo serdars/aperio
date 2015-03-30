@@ -181,7 +181,7 @@ var Group = React.createClass({
         <div className="group-view-bar-header">
           {viewElements}
         </div>
-        <div className="group-view-bar-body">
+        <div className="aperio-subtitle">
           {this.state.group.motto}, {privateText}, {this.state.group.member_count} members
         </div>
       </li>
