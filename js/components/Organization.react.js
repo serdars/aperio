@@ -11,6 +11,7 @@ var OrganizationActions = require('../actions/OrganizationActionCreators')
 var AperioTextInput = require('./AperioTextInput.react');
 var Group = require('./Group.react');
 var AperioSuggestion = require('./AperioSuggestion.react');
+var NewConversation = require('./NewConversation.react');
 
 _id = null;
 
@@ -278,6 +279,7 @@ var Organization = React.createClass({
             <div className="row">
               <div className="col-sm-8">
                 {this.renderMessages()}
+                <NewConversation organizationId={_id} />
                 <RouteHandler />
               </div>
               <div className="col-sm-4">

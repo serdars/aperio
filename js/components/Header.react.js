@@ -36,20 +36,10 @@ var Header = React.createClass({
 
     if (this.state.user != null) {
       currentUserItems.push(
-        <li className="dropdown">
-          <a href="#" className="dropdown-toggle" data-toggle="dropdown"
-            role="button" aria-expanded="false"
-          >
-            Create <span className="caret"></span>
-          </a>
-          <ul className="dropdown-menu" role="menu">
-            <li>
-              <Link to="organization" params={{id: "new"}}>
-                New Organization
-              </Link>
-            </li>
-            <li><a href="#">New Conversation</a></li>
-          </ul>
+        <li>
+          <Link to="organization" params={{id: "new"}}>
+            New Organization
+          </Link>
         </li>
       );
       currentUserItems.push(

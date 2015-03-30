@@ -12,8 +12,8 @@ var OrgInvites = require('./components/OrgInvites.react');
 var OrgTimeline = require('./components/OrgTimeline.react');
 var OrgConversations = require('./components/OrgConversations.react');
 var OrgConstruction = require('./components/OrgConstruction.react');
+var NewConversation = require('./components/NewConversation.react');
 var Home = require('./components/Home.react');
-
 
 var AppActions = require('./actions/AppActionCreators');
 var UserStore = require('./stores/UserStore');

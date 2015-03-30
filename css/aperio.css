@@ -45,6 +45,10 @@ body {
   padding: 0 5px;
 }
 
+.vertical-spacing {
+  padding: 5px 0;
+}
+
 .organization-main-view {
   margin-top: 10px;
 }
@@ -75,4 +79,8 @@ body {
   color: #777;
   font-weight: 200;
   font-size: 12px;
+}
+
+.aperio-dropdown {
+  position: relative;
 }
