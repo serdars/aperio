@@ -68,9 +68,18 @@ AperioDispatcher.register(function(action) {
         }
       }
       break;
+
     case ActionTypes.ORGANIZATION_JOIN:
       if (action.membership.joinable_id == _organization.id) {
         _organization.is_member = true;
+        OrganizationStore.emitChange();
+        break;
+      }
+      break;
+
+    case ActionTypes.CONVERSATION_CREATE:
+      if (action.conversation.organization_id == _organization.id) {
+        _organization.conversations.push(action.conversation);
         OrganizationStore.emitChange();
         break;
       }

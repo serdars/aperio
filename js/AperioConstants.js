@@ -20,7 +20,9 @@ module.exports = {
     USER_INVITED:             null,
     USER_INVITATION_ACCEPTED: null,
     USER_INVITATION_DECLINED: null,
-    ORG_TIMELINE_UPDATE:      null
+    ORG_TIMELINE_UPDATE:      null,
+    CONVERSATION_CREATE:      null,
+    CONVERSATION_CREATE_DONE: null,
   }),
 
   Old: keyMirror({
