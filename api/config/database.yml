@@ -1,0 +1,7 @@
+development:
+  adapter: postgresql
+  encoding: unicode
+  database: aperio
+  pool: 5
+  username: serdar
+  password: 
